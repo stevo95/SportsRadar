@@ -8,14 +8,16 @@ import ButtonLarge from '../components/button.gold.component ';
 import ContentCard from '../components/card.component';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import dateFormat from 'dateformat';
 
 function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates}) {
   const [freeChecked, setFreeChecked] = useState(true);
   const [paidChecked, setPaidChecked] = useState(false);
   const [markerData, setMarkerData] = useState({});
-  const [date, setDate] = useState(new Date(Date.now()));  //new Date(Date.now())
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  const [date, setDate] = useState('Click to set date!');
+  const [time, setTime] = useState('Click to set time!');  //new Date(Date.now())
+  const [showDate, setShowDate] = useState(false);
+  const [showTime, setShowTime] = useState(false);
 
   function hideModal() {
     visibleSetter(false);
@@ -69,42 +71,65 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
   }
 
   const onChangeDate = (event, selectedDate) => {
-    if (event.type === 'set' && mode === 'date') {
-      setDate(_prevstate => {
-        showMode('time');
-        setShow(true);
-        return selectedDate;
-      });
-    } else if (event.type === 'set' && mode === 'time') {
-      setDate(selectedDate);
-      setDate(_prevstate => {
-        showMode('date');
-        setShow(false);
-        return selectedDate;
-      });
-    } else if (event.type === 'dismissed') {
-      if (show) setShow(false);
-      if (mode === 'time')  showMode('date');
+    const formattedDate = dateFormat(selectedDate, 'fullDate');
+    console.log('date changed');
+    console.log(formattedDate);
+    if (event.type === 'dismissed') {
+      setShowDate(false);
+      setShowTime(false);
+    } else if (event.type === 'set') {
+      setDate(formattedDate);
+      setShowDate(false);
+    } else {
+      setShowDate(false);
+      setShowTime(false);
     }
   };
 
-  const showMode = (currentMode) => {
-    setMode(currentMode);
+  const onChangeTime = (event, selectedTime) => {
+    const formattedTime = dateFormat(selectedTime, 'HH:MM');
+    console.log('time changed');
+    console.log(formattedTime);
+    if (event.type === 'dismissed') {
+      setShowDate(false);
+      setShowTime(false);
+    } else if (event.type === 'set') {
+      setTime(formattedTime);
+      setShowTime(false);
+    } else {
+      setShowDate(false);
+      setShowTime(false);
+    }
   };
 
   function dateTimePicker() {
-    if (!show) return;
-    return (
-      <DateTimePicker
-        style = {styles.dateTime}
-        testID="dateTimePicker"
-        value={date}
-        mode={mode}
-        is24Hour={true}
-        display="spinner"
-        onChange={onChangeDate}
-    />
-    );
+    if (showDate) {
+      console.log('rendering date');
+      return (
+        <DateTimePicker
+          style = {styles.dateTime}
+          testID="dateTimePicker"
+          value={new Date(Date.now())}
+          mode={'date'}
+          is24Hour={true}
+          display="spinner"
+          onChange={onChangeDate}
+      />
+      );
+    } else if (showTime) {
+      console.log('rendering time');
+      return (
+        <DateTimePicker
+          style = {styles.dateTime}
+          testID="dateTimePicker"
+          value={new Date(Date.now())}
+          mode={'time'}
+          is24Hour={true}
+          display="spinner"
+          onChange={onChangeTime}
+      />
+      );
+    }
   }
 
   function userInputHandler(key, value) {
@@ -167,8 +192,11 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
           </View>
 
         <Text style={styles.cardTitle}>Date & Time</Text>
-        <TouchableOpacity style = {styles.pickDateButton} onPress = {() => setShow(true)}>
-          <Text style = {styles.pickDateButton}>2021/07/25 18:00</Text>
+        <TouchableOpacity style = {styles.pickDateButton} onPress = {() => setShowDate(true)}>
+          <Text style = {styles.pickDateButton}>{date}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style = {styles.pickDateButton} onPress = {() => setShowTime(true)}>
+          <Text style = {styles.pickDateButton}>{time}</Text>
         </TouchableOpacity>
         {dateTimePicker()}
 

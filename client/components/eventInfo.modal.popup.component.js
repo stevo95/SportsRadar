@@ -1,4 +1,3 @@
-/* eslint-disable curly */
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
