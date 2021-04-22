@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+// require('dotenv').config();
+
 import React from 'react';
 import { Root } from 'native-base';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
@@ -10,7 +12,7 @@ import RootStackScreen from './Navigators/RootStack.Navigator';
 const client = new ApolloClient({
   // 192.168.1.178
   // const baseURL = 'http://192.168.1.178:3002';
-  uri: 'http://192.168.1.178:4000',
+  uri: 'http://192.168.1.179:4000',
   cache: new InMemoryCache({}),
   clientState: {
     defaults: {

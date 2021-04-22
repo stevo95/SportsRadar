@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import { useMutation, useQuery  } from '@apollo/client';
@@ -5,28 +6,30 @@ import {View, StyleSheet, PermissionsAndroid, Dimensions, Text} from 'react-nati
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-spinkit';
-import ModalPopup from '../../components/modal.popup.component';
+import CreateEventModal from '../../components/modal.popup.component';
 import CustomCallout from '../../components/callout.component';
+import EventInfoModal from '../../components/eventInfo.modal.popup.component';
 
 const mapStyle = require('../../assets/mapStyle.json');
-// import Geolocation from '@react-native-community/geolocation';
 import {  ADD_EVENT } from '../../GraphQL/mutationDeclarations';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
+// import Geolocation from '@react-native-community/geolocation';
 // types: ['CircleFlip', 'Bounce', 'Wave', 'WanderingCubes', 'Pulse', 'ChasingDots', 'ThreeBounce', 'Circle', '9CubeGrid', 'WordPress', 'FadingCircle', 'FadingCircleAlt', 'Arc', 'ArcAlt'],
 
 function MapScreen() {
   const [uid, setUid] = useState('1');
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [userLatLng , setUserLatLng ] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761});
   const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState(); // {latitude: 41.39981990644345, longitude: 2.196051925420761}
   const [region, setRegion] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761, latitudeDelta: 0.005, longitudeDelta: 0.020});
+  const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
+  const [eventModalVisible, setEventModalVisible] = useState(false);
+
   const [userLongitude , setUserLongitude ] = useState(0);
   const [userLatitude , setUserLatitude ] = useState(0);
+  const [userLatLng , setUserLatLng ] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761});
+
   const [events, setEvents] = useState([]);
-
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
-
   const { loadingEvents, loadingError, data } = useQuery(GET_ALL_EVENTS);
 
 
@@ -93,7 +96,7 @@ function MapScreen() {
   function openModal(coordinates) {
     const newCoordinates = Object.assign({}, coordinates);
     setNewMarkerCoordinates(newCoordinates);
-    setModalVisible(true);
+    setCreateEventModalVisible(true);
   }
 
   function createHandler(markerData) {
@@ -113,19 +116,15 @@ function MapScreen() {
       }});
       return newState;
     });
-    setModalVisible(false);
+    setCreateEventModalVisible(false);
   }
 
   function renderEvents() {
-    if (!loadingEvents) {
+    if (!loading && data.getAllEvents.length > 0) {
       const eventsList = data.getAllEvents.map((marker, idx) => {
         return (
           <MapView.Marker
             key = {idx}
-            // ref={ref => {
-            //   this.marker1 = ref;
-            // }}
-            onCalloutPress={() => this.hideCallout()}
             image={require('../../assets/event-locator.png')}
             coordinate= {{
               latitude: marker.latitude,
@@ -146,7 +145,19 @@ function MapScreen() {
       return eventsList;
     } else {
       console.log('loading events');
+      return;
     }
+  }
+
+  function renderEventInfo() {
+    return (
+      <EventInfoModal
+        visible={eventModalVisible}
+        visibleSetter = {setEventModalVisible}
+        onClickButton = {createHandler}
+        newMarkerCoordinates = {newMarkerCoordinates}
+      />
+    );
   }
 
   return (
@@ -155,37 +166,30 @@ function MapScreen() {
         loading ?
           <Spinner style={styles.spinner} type={'Circle'} color={'gold'}/>
         :
-
         <View style={styles.MapViewContainer}>
-
-          <ModalPopup
-            visible={modalVisible}
-            visibleSetter = {setModalVisible}
+          <CreateEventModal
+            visible={createEventModalVisible}
+            visibleSetter = {setCreateEventModalVisible}
             onClickButton = {createHandler}
             newMarkerCoordinates = {newMarkerCoordinates}
-            />
+          />
           <MapView
             style={styles.map}
             customMapStyle={mapStyle}
             onLongPress={(event) => openModal(event.nativeEvent.coordinate)}
             initialRegion={{
-            // latitude: {userLatitude},
-            // longitude: {userLongitude},
-            latitude: 41.39507864250095,
-            longitude: 2.197785684468939,
+            latitude: userLatLng.latitude,
+            longitude: userLatLng.longitude,
             latitudeDelta: 0.005,
             longitudeDelta: 0.005,
           }}
-            // initialRegion= {region}
-            // region = {region}
           >
             {renderEvents()}
             <MapView.Marker
-              // coordinate={latLng}
               image={require('../../assets/user.png')}
               coordinate= {{
-                latitude: 41.39507864250095,
-                longitude: 2.197785684468939,
+                latitude: userLatLng.latitude,
+                longitude: userLatLng.longitude,
               }}
             />
           </MapView>
@@ -215,6 +219,7 @@ const styles = StyleSheet.create({
   map: {
     flex:1,
     alignSelf: 'stretch',
+    padding: 5,
   },
   userLocation: {
     width: 20,

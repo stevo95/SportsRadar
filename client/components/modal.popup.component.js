@@ -1,4 +1,4 @@
-/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable curly */
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
@@ -13,7 +13,7 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
   const [freeChecked, setFreeChecked] = useState(true);
   const [paidChecked, setPaidChecked] = useState(false);
   const [markerData, setMarkerData] = useState({});
-  const [date, setDate] = useState('2020/05/20 18:00');  //new Date(Date.now())
+  const [date, setDate] = useState(new Date(Date.now()));  //new Date(Date.now())
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
 
@@ -70,14 +70,14 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
 
   const onChangeDate = (event, selectedDate) => {
     if (event.type === 'set' && mode === 'date') {
-      setDate(prevstate => {
+      setDate(_prevstate => {
         showMode('time');
         setShow(true);
         return selectedDate;
       });
     } else if (event.type === 'set' && mode === 'time') {
       setDate(selectedDate);
-      setDate(prevstate => {
+      setDate(_prevstate => {
         showMode('date');
         setShow(false);
         return selectedDate;
@@ -243,7 +243,6 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     fontSize: 25,
     fontWeight: 'bold',
-    // alignItems: 'flex-start',
   },
 });
 

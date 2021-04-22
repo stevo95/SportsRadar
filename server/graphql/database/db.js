@@ -13,12 +13,16 @@ const Sequelize = require('sequelize');
 let reqPath = path.join(__dirname, '../database/database-schemas');
 
 const config = {
-  host: process.env.DB_HOST,
+  host: 'localhost',
   dialect: 'postgres',
-  port:process.env.DB_PORT
+  port:'3000'
 }
+console.log(process.env.DB_NAME);
+console.log(process.env.DB_DIALECT);
+console.log(process.env.DB_HOST);
+console.log(process.env.DB_PASS);
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DIALECT, process.env.DB_PASS, config);
+const sequelize = new Sequelize('sport_social', 'postgres', '123456', config);
 db = {};
 
 const files = fs.readdirSync(reqPath);

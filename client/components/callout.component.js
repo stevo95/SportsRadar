@@ -1,12 +1,20 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import ButtonGold from './button.gold.component ';
 
 function CustomCallout({eventData, uid}) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={styles.profileContainer}>
+        <Text style={styles.imgContainer}>
+          <Image
+            source={require('../assets/user.png')}
+            style = {styles.image}
+          />
+        </Text>
+      </TouchableOpacity>
       <Text> {eventData.sport} with USERNAME</Text>
       {
         eventData.free ?
@@ -40,6 +48,25 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     flex: 0.1,
+  },
+  profileContainer: {
+    height: 150,
+    width: 150,
+    borderRadius: 75,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+    // backgroundColor: 'black',
+  },
+  image: {
+    height: 80,
+    width: 100,
+    alignSelf: 'center',
+    resizeMode: 'cover',
+  },
+  imgContainer: {
+    flex: 1,
   },
 });
 

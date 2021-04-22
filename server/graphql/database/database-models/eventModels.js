@@ -26,6 +26,7 @@ async function getAllEvents() {
     const events = await db.events.findAll();
     return events;
   } catch (error) {
+    console.log(error);
     return error;
   }
 }
