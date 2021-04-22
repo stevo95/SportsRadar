@@ -25,7 +25,7 @@ function MapScreen() {
     latitude: 41.39981990644345,
     longitude: 2.196051925420761,
     latitudeDelta: 0.005,
-    longitudeDelta: 0.020,
+    longitudeDelta: 0.020
   });
 
   const [selectedEvent, setSelectedEvent] = useState({
@@ -125,8 +125,9 @@ function MapScreen() {
 
   async function createHandler(markerData) {
     markerData.creatorId = uid;
-    console.log('marker data in createHandler: ');
+    console.log('****************************  NEW MARKER **********************************');
     console.log(markerData);
+    console.log('****************************  NEW MARKER **********************************');
     const datahere = await addEvent({ variables: {
       addEventDescription: markerData.description,
       addEventDate: markerData.date,
@@ -137,35 +138,27 @@ function MapScreen() {
       addEventFree: markerData.free,
       addEventPrice: markerData.price,
       addCreator_id: markerData.creatorId,
-    }});
-    console.log('_______________________________');
-    console.log('eventData: ');
-    console.log(eventData);
-    console.log('returned data: ');
-    console.log(datahere.updatedList);
-    console.log('_______________________________');
-    await setEvents(prevState => {
-      const newState = eventData;
-      console.log('_______________________________');
-      console.log('eventData: ');
-      console.log(newState);
-
-      if (eventData === undefined) {
-        return prevState;
-      } else {
-        return newState;
+    },
+    update: (cache, {data}) => {
+      try {
+        const toWrite = [...data.addEvent.updatedList];
+        setEvents(toWrite);
+      } catch (error) {
+        console.log(error);
       }
-    });
+    },
+  });
     setCreateEventModalVisible(false);
   }
 
   function eventOnPress(idx) {
-    setSelectedEvent(data.getAllEvents[idx]);
+    setSelectedEvent(events[idx]);
     setEventModalVisible(true);
   }
 
   function renderEvents() {
-    if (!loading && data !== undefined) {
+
+    if (!loading && events !== undefined) {
       const eventsList = events.map((marker, idx) => {
         return (
           <MapView.Marker
