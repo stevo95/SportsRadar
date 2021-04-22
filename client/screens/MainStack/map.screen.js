@@ -7,7 +7,6 @@ import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-spinkit';
 import CreateEventModal from '../../components/modal.popup.component';
-import CustomCallout from '../../components/callout.component';
 import EventInfoModal from '../../components/eventInfo.modal.popup.component';
 
 const mapStyle = require('../../assets/mapStyle.json');
@@ -23,6 +22,7 @@ function MapScreen() {
   const [region, setRegion] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761, latitudeDelta: 0.005, longitudeDelta: 0.020});
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState({sport: 'default', free: true, price: null, datetime: '2020/05/20 18:00', description: 'default'});
 
   const [userLongitude , setUserLongitude ] = useState(0);
   const [userLatitude , setUserLatitude ] = useState(0);
@@ -103,7 +103,6 @@ function MapScreen() {
     markerData.creatorId = uid;
     setEvents(prevState => {
       const newState = [...prevState, markerData];
-      console.log(newState);
       addEvent({ variables: {
         addEventDescription: markerData.description,
         addEventDatetime: markerData.date,
@@ -119,43 +118,38 @@ function MapScreen() {
     setCreateEventModalVisible(false);
   }
 
+  function eventOnPress(idx) {
+    setSelectedEvent(data.getAllEvents[idx]);
+    setEventModalVisible(true);
+  }
+
   function renderEvents() {
     if (!loading && data.getAllEvents.length > 0) {
       const eventsList = data.getAllEvents.map((marker, idx) => {
         return (
           <MapView.Marker
             key = {idx}
+            onPress = {() => eventOnPress(idx)}
             image={require('../../assets/event-locator.png')}
             coordinate= {{
               latitude: marker.latitude,
               longitude: marker.longitude,
             }}
-          >
-            <MapView.Callout
-              tooltip={true}
-              style = {styles.callout}
-            >
-              <CustomCallout
-                eventData = {marker}
-              />
-            </MapView.Callout>
-          </MapView.Marker>
+          />
         );
       });
       return eventsList;
     } else {
-      console.log('loading events');
       return;
     }
   }
 
-  function renderEventInfo() {
+  function renderEventInfo(event) {
     return (
       <EventInfoModal
         visible={eventModalVisible}
         visibleSetter = {setEventModalVisible}
-        onClickButton = {createHandler}
-        newMarkerCoordinates = {newMarkerCoordinates}
+        eventData = {event}
       />
     );
   }
@@ -173,6 +167,7 @@ function MapScreen() {
             onClickButton = {createHandler}
             newMarkerCoordinates = {newMarkerCoordinates}
           />
+          {renderEventInfo(selectedEvent)}
           <MapView
             style={styles.map}
             customMapStyle={mapStyle}
