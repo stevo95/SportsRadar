@@ -7,7 +7,8 @@ async function addEvent (eventData) {
     await db.events.sync();
     const newEvent = await db.events.create({
       description: eventData.description,
-      datetime: eventData.datetime,
+      date: eventData.date,
+      time: eventData.time,
       latitude: eventData.latitude,
       longitude: eventData.longitude,
       sport: eventData.sport,
@@ -15,7 +16,8 @@ async function addEvent (eventData) {
       creator_id: eventData.creator_id,
       price: eventData.price,
     });
-    return newEvent;
+    const updatedList = await getAllEvents();
+    return updatedList;
   } catch(error) {
     return error;
   }

@@ -17,10 +17,6 @@ const config = {
   dialect: 'postgres',
   port:'3000'
 }
-console.log(process.env.DB_NAME);
-console.log(process.env.DB_DIALECT);
-console.log(process.env.DB_HOST);
-console.log(process.env.DB_PASS);
 
 const sequelize = new Sequelize('sport_social', 'postgres', '123456', config);
 db = {};

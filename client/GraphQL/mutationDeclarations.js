@@ -25,18 +25,20 @@ const ADD_USER = gql`
 const ADD_EVENT = gql`
   mutation AddEvent(
     $addEventDescription: String!,
-    $addEventDatetime: String!,
+    $addEventDate: String!,
+    $addEventTime: String!,
     $addEventLatitude: Float!,
     $addEventLongitude: Float!,
     $addEventSport: String!,
     $addEventFree: Boolean!,
-    $addCreator_id: String!,
     $addEventPrice: String,
+    $addCreator_id: String!,
 
   ) {
     addEvent(
       description: $addEventDescription,
-      datetime: $addEventDatetime,
+      date: $addEventDate,
+      time: $addEventTime,
       latitude: $addEventLatitude,
       longitude: $addEventLongitude,
       sport: $addEventSport,
@@ -46,11 +48,30 @@ const ADD_EVENT = gql`
     ) {
       success
       message
-      event {
+      updatedList {
         _id
+        description
+        date
+        time
+        latitude
+        sport
+        longitude
+        free
+        creator_id
+        price
       }
     }
   }
 `;
+
+// mutation Mutation($addEventDescription: String!, $addEventDate: String!, $addEventTime: String!, $addEventLatitude: Float!, $addEventLongitude: Float!, $addEventSport: String!, $addEventFree: Boolean!, $addEventCreatorId: String!, $addEventPrice: String) {
+//   addEvent(description: $addEventDescription, date: $addEventDate, time: $addEventTime, latitude: $addEventLatitude, longitude: $addEventLongitude, sport: $addEventSport, free: $addEventFree, creator_id: $addEventCreatorId, price: $addEventPrice) {
+//     success
+//     message
+//     event {
+//       _id
+//     }
+//   }
+// }
 
 module.exports = {ADD_USER,  ADD_EVENT};

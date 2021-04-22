@@ -5,7 +5,8 @@ const GET_ALL_EVENTS = gql`
     getAllEvents {
       _id
       description
-      datetime
+      date
+      time
       latitude
       longitude
       sport

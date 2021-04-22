@@ -42,7 +42,8 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
           :
           <Text style={styles.text}>{eventData.price}€</Text>
         }
-        <Text style={styles.text}>{eventData.datetime}</Text>
+        <Text style={styles.text}>{eventData.date}</Text>
+        <Text style={styles.text}>{eventData.time}</Text>
         <Text style={styles.text}>{eventData.description}</Text>
         <View style={styles.buttonWrapper}>
           <ButtonGold
@@ -76,8 +77,8 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
       justifyContent: 'space-around',
       borderLeftWidth: 1,
       borderLeftColor: '#f2f2f2',
-      alignItems: 'center',
-      padding: 5,
+      alignItems: 'flex-start',
+      padding: 3,
     },
     profileContainer: {
       height: 150,
@@ -91,17 +92,20 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
     title: {
       fontWeight: 'bold',
       fontSize: 20,
+      textAlign: 'left',
     },
     text: {
       color: 'whitesmoke',
       fontSize: 20,
       fontFamily: 'sans-serif-medium',
-      textAlign: 'center',
+      textAlign: 'left',
+      marginLeft: '2%',
     },
     buttonWrapper: {
       height: '15%',
       marginBottom: '10%',
       width: '60%',
+      alignSelf: 'center',
     },
     image: {
       height: 80,

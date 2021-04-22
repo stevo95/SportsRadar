@@ -1,19 +1,18 @@
-/* eslint-disable curly */
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, ScrollView} from 'react-native';
 import Modal from 'react-native-modal';
-import { Toast } from 'native-base';
+import { Toast, Content, ListItem, Radio, Right, Left } from 'native-base';
 import ButtonLarge from '../components/button.gold.component ';
 import ContentCard from '../components/card.component';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import CardPicker from '../components/card.picker.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dateFormat from 'dateformat';
 
 function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates}) {
   const [freeChecked, setFreeChecked] = useState(true);
-  const [paidChecked, setPaidChecked] = useState(false);
-  const [markerData, setMarkerData] = useState({});
+  const [markerData, setMarkerData] = useState({sport:'Badminton'});
   const [date, setDate] = useState('Click to set date!');
   const [time, setTime] = useState('Click to set time!');  //new Date(Date.now())
   const [showDate, setShowDate] = useState(false);
@@ -26,22 +25,20 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
   function onCreate() {
     setMarkerData(previous => {
       let newMarker = Object.assign(previous, newMarkerCoordinates);
-      newMarker = Object.assign(newMarker, {date: date});
+      newMarker = Object.assign(newMarker, {date: date, time: time});
       if (freeChecked) {
         newMarker = Object.assign(newMarker, {price: null});
       }
       return newMarker;
     });
 
-    if (freeChecked && paidChecked) {
+    if (  markerData.description === undefined ||
+          markerData.description === '' ||
+          (!freeChecked && markerData.price === undefined) ||
+          (!freeChecked && markerData.price === '')
+          ) {
       Toast.show({
-        text: 'Only one of price options must be checked',
-        duration: 2000,
-        position: 'bottom',
-      });
-    } else if (!freeChecked && !paidChecked) {
-      Toast.show({
-        text: 'One of price options must be checked',
+        text: 'All fields are mandatory! ',
         duration: 2000,
         position: 'bottom',
       });
@@ -51,12 +48,13 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
         return newMarker;
       });
       onClickButton(markerData);
-      setMarkerData({});
+      setFreeChecked(true);
+      setMarkerData({sport:'Badminton'});
     }
   }
 
   function Price() {
-    if (paidChecked) {
+    if (!freeChecked) {
       return (
         <View style={styles.smallCardWrapper}>
           <Text style={styles.cardTitle}>Price</Text>
@@ -72,8 +70,6 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
 
   const onChangeDate = (event, selectedDate) => {
     const formattedDate = dateFormat(selectedDate, 'fullDate');
-    console.log('date changed');
-    console.log(formattedDate);
     if (event.type === 'dismissed') {
       setShowDate(false);
       setShowTime(false);
@@ -88,8 +84,6 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
 
   const onChangeTime = (event, selectedTime) => {
     const formattedTime = dateFormat(selectedTime, 'HH:MM');
-    console.log('time changed');
-    console.log(formattedTime);
     if (event.type === 'dismissed') {
       setShowDate(false);
       setShowTime(false);
@@ -104,7 +98,6 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
 
   function dateTimePicker() {
     if (showDate) {
-      console.log('rendering date');
       return (
         <DateTimePicker
           style = {styles.dateTime}
@@ -117,7 +110,6 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
       />
       );
     } else if (showTime) {
-      console.log('rendering time');
       return (
         <DateTimePicker
           style = {styles.dateTime}
@@ -143,6 +135,14 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
     });
   }
 
+  function handleRadioButtons(value) {
+    if (value === 'free') {
+      setFreeChecked(true);
+    } else if (value === 'paid') {
+      setFreeChecked(false);
+    }
+  }
+
   return (
     <Modal
       isVisible={visible}
@@ -156,30 +156,41 @@ function ModalPopup({visible, visibleSetter, onClickButton, newMarkerCoordinates
         <ScrollView contentContainerStyle={styles.cardContainer}>
           <Text style={styles.title}>Add new marker</Text>
           <View style={styles.checkboxContainer}>
-            <BouncyCheckbox
-              size = {25}
-              text="Free"
-              fillColor="gold"
-              unfillColor="khaki"
-              isChecked={freeChecked}
-              onPress={(isChecked) => {setFreeChecked(isChecked);}}
-            />
-            <BouncyCheckbox
-              size = {25}
-              text="Paid"
-              fillColor="gold"
-              unfillColor="khaki"
-              isChecked={paidChecked}
-              onPress={(isChecked) => {setPaidChecked(isChecked);}}
-            />
+            <Content style = {{flex:1}}>
+            <ListItem>
+              <Left>
+                <Text>Free</Text>
+              </Left>
+              <Right>
+                <Radio
+                  selected={freeChecked}
+                  color= "grey"
+                  selectedColor= "gold"
+                  onPress = {() => (handleRadioButtons('free'))}
+                />
+              </Right>
+            </ListItem>
+            <ListItem>
+              <Left>
+                <Text>Paid</Text>
+              </Left>
+              <Right >
+              <Radio
+                  selected={!freeChecked}
+                  color= "grey"
+                  selectedColor= "gold"
+                  onPress = {() => {handleRadioButtons('paid')}}
+                />
+              </Right>
+            </ListItem>
+          </Content>
           </View>
           {Price()}
           <View style={styles.smallCardWrapper}>
             <Text style={styles.cardTitle}>Sport</Text>
-            <ContentCard
-              placeholderText= "Describe the activity..."
-              objKey= "sport"
-              onChange = {userInputHandler}
+            <CardPicker
+              objKey = "sport"
+              onChange= {userInputHandler}
             />
           </View>
           <View style = {styles.bigCardWrapper}>
@@ -237,14 +248,17 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flexDirection:'row',
     justifyContent: 'space-around',
+    height: '20%',
+    marginLeft: '-3%',
+    marginRight: '-3%',
   },
   smallCardWrapper: {
     height: '10%',
-    marginBottom: 50,
+    marginBottom: 40,
   },
   bigCardWrapper: {
     height: '15%',
-    marginBottom: 50,
+    marginBottom: 40,
   },
   buttonContainer: {
     height: 50,
@@ -271,6 +285,14 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     fontSize: 25,
     fontWeight: 'bold',
+  },
+  picker: {
+    width: '80%',
+    alignSelf: 'center',
+  },
+  listContent: {
+    height: '20%',
+    backgroundColor: '#5ce1e6',
   },
 });
 

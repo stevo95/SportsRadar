@@ -9,26 +9,49 @@ import Spinner from 'react-native-spinkit';
 import CreateEventModal from '../../components/modal.popup.component';
 import EventInfoModal from '../../components/eventInfo.modal.popup.component';
 
-const mapStyle = require('../../assets/mapStyle.json');
 import {  ADD_EVENT } from '../../GraphQL/mutationDeclarations';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
-// import Geolocation from '@react-native-community/geolocation';
-// types: ['CircleFlip', 'Bounce', 'Wave', 'WanderingCubes', 'Pulse', 'ChasingDots', 'ThreeBounce', 'Circle', '9CubeGrid', 'WordPress', 'FadingCircle', 'FadingCircleAlt', 'Arc', 'ArcAlt'],
+
+const mapStyle = require('../../assets/mapStyle.json');
 
 function MapScreen() {
-  const [uid, setUid] = useState('1');
+  const [uid, setUid] = useState('2');
   const [loading, setLoading] = useState(true);
-  const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState(); // {latitude: 41.39981990644345, longitude: 2.196051925420761}
-  const [region, setRegion] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761, latitudeDelta: 0.005, longitudeDelta: 0.020});
+  const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState();
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState({sport: 'default', free: true, price: null, datetime: '2020/05/20 18:00', description: 'default'});
 
-  const [userLongitude , setUserLongitude ] = useState(0);
-  const [userLatitude , setUserLatitude ] = useState(0);
-  const [userLatLng , setUserLatLng ] = useState({latitude: 41.39981990644345, longitude: 2.196051925420761});
+  const [region, setRegion] = useState({
+    latitude: 41.39981990644345,
+    longitude: 2.196051925420761,
+    latitudeDelta: 0.005,
+    longitudeDelta: 0.020,
+  });
 
-  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState({
+    sport: 'default',
+    free: true,
+    price: null,
+    datetime: '2020/05/20 18:00',
+    description: 'default'});
+    const [events, setEvents] = useState([{
+      _id: 'default',
+      date: 'default',
+      time:'default',
+      creator_id: 'default',
+      description: 'default',
+      latitude: 41.526,
+      longitude: 5.25,
+      sport: 'default',
+      free: true,
+      price: null,
+    }]);
+
+    const [userLatLng , setUserLatLng ] = useState({
+      latitude: 41.39981990644345,
+      longitude: 2.196051925420761,
+    });
+
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
   const { loadingEvents, loadingError, data } = useQuery(GET_ALL_EVENTS);
 
@@ -69,6 +92,7 @@ function MapScreen() {
         await requestGeolocationPermission();
         await Geolocation.getCurrentPosition(
           (locationInfo) => {
+            setEvents(data.getAllEvents);
             setUserLatLng(prevState => {
               let coordinates = Object.assign({}, prevState);
               coordinates.latitude = locationInfo.coords.latitude;
@@ -99,21 +123,38 @@ function MapScreen() {
     setCreateEventModalVisible(true);
   }
 
-  function createHandler(markerData) {
+  async function createHandler(markerData) {
     markerData.creatorId = uid;
-    setEvents(prevState => {
-      const newState = [...prevState, markerData];
-      addEvent({ variables: {
-        addEventDescription: markerData.description,
-        addEventDatetime: markerData.date,
-        addEventLatitude: markerData.latitude,
-        addEventLongitude: markerData.longitude,
-        addEventSport: markerData.sport,
-        addEventFree: markerData.free,
-        addEventPrice: markerData.price,
-        addCreator_id: markerData.creatorId,
-      }});
-      return newState;
+    console.log('marker data in createHandler: ');
+    console.log(markerData);
+    const datahere = await addEvent({ variables: {
+      addEventDescription: markerData.description,
+      addEventDate: markerData.date,
+      addEventTime: markerData.time,
+      addEventLatitude: markerData.latitude,
+      addEventLongitude: markerData.longitude,
+      addEventSport: markerData.sport,
+      addEventFree: markerData.free,
+      addEventPrice: markerData.price,
+      addCreator_id: markerData.creatorId,
+    }});
+    console.log('_______________________________');
+    console.log('eventData: ');
+    console.log(eventData);
+    console.log('returned data: ');
+    console.log(datahere.updatedList);
+    console.log('_______________________________');
+    await setEvents(prevState => {
+      const newState = eventData;
+      console.log('_______________________________');
+      console.log('eventData: ');
+      console.log(newState);
+
+      if (eventData === undefined) {
+        return prevState;
+      } else {
+        return newState;
+      }
     });
     setCreateEventModalVisible(false);
   }
@@ -124,8 +165,8 @@ function MapScreen() {
   }
 
   function renderEvents() {
-    if (!loading && data.getAllEvents.length > 0) {
-      const eventsList = data.getAllEvents.map((marker, idx) => {
+    if (!loading && data !== undefined) {
+      const eventsList = events.map((marker, idx) => {
         return (
           <MapView.Marker
             key = {idx}

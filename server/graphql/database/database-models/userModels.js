@@ -3,7 +3,6 @@
 const db = require('../db');
 
 async function getUserById(id) {
-  console.log('get by id');
   try{
     const user = await db.users.findAll({
       where: {

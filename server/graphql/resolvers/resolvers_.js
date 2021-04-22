@@ -21,6 +21,7 @@ module.exports = {
     getAllEvents: async( _, __ ) => {
       try {
         const eventsData = await models.eventModels.getAllEvents();
+        console.log(eventsData);
         return eventsData;
       } catch (error) {
         console.log(error);
@@ -38,13 +39,13 @@ module.exports = {
         throw new ApolloError(error);
       }
     },
-  addEvent: async (_, eventData ) => {
-    try {
-      const event = await models.eventModels.addEvent(eventData);
+    addEvent: async (_, eventData ) => {
+      try {
+      const events = await models.eventModels.addEvent(eventData);
       let responseMessage = {
         success: true,
-        message: 'Event was added to database',
-        event: event
+        message: 'Event added to database',
+        updatedList: events,
       }
       return responseMessage;
     } catch (error) {

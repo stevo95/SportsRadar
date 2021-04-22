@@ -21,7 +21,8 @@ const typeDefs = gql`
   type Event {
     _id: ID!
     description: String!
-    datetime: String!
+    date: String!
+    time: String!
     latitude: Float!
     longitude: Float!
     sport: String!
@@ -108,7 +109,8 @@ const typeDefs = gql`
 
     addEvent(
       description: String!
-      datetime: String!
+      date: String!
+      time: String!
       latitude: Float!
       longitude: Float!
       sport: String!
@@ -127,7 +129,7 @@ const typeDefs = gql`
   type AddEventResponse {
     success: Boolean!
     message: String!
-    event: Event
+    updatedList: [Event]
   }
 
   type AddUserResponse {
