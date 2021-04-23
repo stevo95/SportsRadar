@@ -35,4 +35,20 @@ async function getAllEvents() {
   }
 }
 
-module.exports = {addEvent, getAllEvents}
+async function updateEventAttendance(userData) {
+  // try {
+  //   const user = await db.users.findByPk(userData._id);
+  //   const toLoad = [...user.events_attending, userData.eventId];
+  //   const updatedHosting = await db.users.update({events_hosting: toLoad}, {
+  //     where: {
+  //       _id: userData._id
+  //     }
+  //   });
+  //   return;
+  // } catch (error) {
+  //   console.log(error);
+  //   return error;
+  // }
+}
+
+module.exports = {addEvent, getAllEvents, updateEventAttendance}

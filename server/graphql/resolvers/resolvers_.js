@@ -52,9 +52,23 @@ module.exports = {
     }
   },
   updateUserHosting: async (_, userData) => {
-    console.log(userData);
     try{
       const updatedUser = await models.userModels.updateUserHosting(userData);
+      let responseMessage = {
+        success: true,
+        message: 'Successfully updated',
+      }
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
+  },
+  userJoinedEvent: async (_, mutationData) => {
+    console.log(mutationData);
+    try{
+      await models.userModels.updateUserAttending(mutationData);
+      await models.userModels.updateUserAttending(mutationData);
       let responseMessage = {
         success: true,
         message: 'Successfully updated',

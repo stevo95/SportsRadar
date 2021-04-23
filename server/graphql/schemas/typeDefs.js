@@ -95,9 +95,9 @@ const typeDefs = gql`
       events: [ID]!
     ): [String]
 
-    updateUserAttending(
-      _id: ID!
-      event: ID!
+    userJoinedEvent(
+      _id: String
+      eventId: String
     ): UpdateResponse
 
     updateUserHosting(
