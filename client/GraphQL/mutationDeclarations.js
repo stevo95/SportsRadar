@@ -22,16 +22,16 @@ const ADD_USER = gql`
 
 const ADD_EVENT = gql`
   mutation AddEvent(
-    $addEventDescription: String!
-    $addEventDate: String!
+    $addEventDescription: String
+    $addEventDate: String
     $addEventTime: String
-    $addEventLatitude: Float!
-    $addEventLongitude: Float!
-    $addEventSport: String!
-    $addEventFree: Boolean!
+    $addEventLatitude: Float
+    $addEventLongitude: Float
+    $addEventSport: String
+    $addEventFree: Boolean
+    $addEventCreatorId: String
+    $addEventCreatorUsername: String
     $addEventPrice: String
-    $addCreator_id: String!
-    $addCreator_username: String!
   ) {
     addEvent(
       description: $addEventDescription
@@ -41,9 +41,9 @@ const ADD_EVENT = gql`
       longitude: $addEventLongitude
       sport: $addEventSport
       free: $addEventFree
+      creator_id: $addEventCreatorId
+      creator_username: $addEventCreatorUsername
       price: $addEventPrice
-      creator_id: $addCreator_id
-      creator_username: $addCreator_username
     ) {
       success
       message
@@ -66,12 +66,12 @@ const ADD_EVENT = gql`
 
 const UPDATE_HOSTING = gql`
   mutation UpdatedUserHosting(
-    $updateUserHostingId: ID!
-    $updateUserHostingEvent: ID!
+    $updateUserHostingId: String!
+    $updateUserHostingEventId: String!
   ) {
     updateUserHosting(
       _id: $updateUserHostingId
-      event: $updateUserHostingEvent
+      eventId: $updateUserHostingEventId
     ) {
       success
       message

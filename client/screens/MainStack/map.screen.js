@@ -11,7 +11,7 @@ import CreateEventModal from '../../components/modal.popup.component';
 import EventInfoModal from '../../components/eventInfo.modal.popup.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {  ADD_EVENT } from '../../GraphQL/mutationDeclarations';
+import {  ADD_EVENT, UPDATE_HOSTING } from '../../GraphQL/mutationDeclarations';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
 
 const mapStyle = require('../../assets/mapStyle.json');
@@ -21,14 +21,12 @@ function MapScreen({navigation}) {
   const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState();
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
-
   const [region, setRegion] = useState({
     latitude: 41.39981990644345,
     longitude: 2.196051925420761,
     latitudeDelta: 0.005,
     longitudeDelta: 0.020,
   });
-
   const [selectedEvent, setSelectedEvent] = useState({
     sport: 'default',
     free: true,
@@ -43,17 +41,16 @@ function MapScreen({navigation}) {
       description: 'default',
       latitude: 41.526,
       longitude: 5.25,
-      sport: 'default',
+      sport: 'you',
       free: true,
       price: null,
     }]);
-
     const [userLatLng , setUserLatLng ] = useState({
       latitude: 41.39981990644345,
       longitude: 2.196051925420761,
     });
-
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
+  const [updateHosting, {hostingData}] = useMutation(UPDATE_HOSTING);
   const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_ALL_EVENTS);
 
 
@@ -127,7 +124,7 @@ function MapScreen({navigation}) {
   async function createHandler(markerData) {
     try {
       const authInfo = await AsyncStorage.getItem('authInfo');
-      const parsedData = authInfo != null ? JSON.parse(authInfo) : null;
+      const parsedData = await authInfo != null ? JSON.parse(authInfo) : null;
       markerData.creatorId = parsedData.uid;
       markerData.username = parsedData.username;
 
@@ -135,7 +132,7 @@ function MapScreen({navigation}) {
       console.log(markerData);
       console.log('****************************  NEW MARKER **********************************');
 
-      await addEvent({ variables: {
+      const addEventResult = await addEvent({ variables: {
         addEventDescription: markerData.description,
         addEventDate: markerData.date,
         addEventTime: markerData.time,
@@ -143,19 +140,29 @@ function MapScreen({navigation}) {
         addEventLongitude: markerData.longitude,
         addEventSport: markerData.sport,
         addEventFree: markerData.free,
+        addEventCreatorId: markerData.creatorId,
+        addEventCreatorUsername: markerData.username,
         addEventPrice: markerData.price,
-        addCreator_id: markerData.creatorId,
-        addCreator_username: markerData.username,
       },
       update: (cache, {data}) => {
         try {
           const toWrite = [...data.addEvent.updatedList];
           setEvents(toWrite);
         } catch (error) {
+          console.log('error');
           console.log(error);
         }
       },
     });
+    console.log('update user attending');
+    const newEventId = addEventResult.data.addEvent.updatedList[addEventResult.data.addEvent.updatedList.length - 1]._id;
+    console.log(newEventId);
+    console.log(typeof newEventId);
+    const updateUserHosting = await updateHosting({variables: {
+      updateUserHostingId: parsedData.uid,
+      updateUserHostingEventId: newEventId,
+    }});
+    console.log(updateUserHosting);
       setCreateEventModalVisible(false);
     } catch (error) {
       console.log(error);

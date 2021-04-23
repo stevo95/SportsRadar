@@ -7,8 +7,6 @@ import ButtonGold from './button.gold.component ';
 
 function EventInfoModalPopup({visible, visibleSetter, eventData, navHandler, userId}) {
 
-  console.log(eventData);
-
   function hideModal() {
     visibleSetter(false);
   }

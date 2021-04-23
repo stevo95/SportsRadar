@@ -52,6 +52,7 @@ module.exports = {
     }
   },
   updateUserHosting: async (_, userData) => {
+    console.log(userData);
     try{
       const updatedUser = await models.userModels.updateUserHosting(userData);
       let responseMessage = {

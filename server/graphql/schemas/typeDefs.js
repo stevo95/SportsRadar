@@ -101,8 +101,8 @@ const typeDefs = gql`
     ): UpdateResponse
 
     updateUserHosting(
-      _id: ID!
-      event: ID!
+      _id: String
+      eventId: String
     ): UpdateResponse
 
 
@@ -111,15 +111,15 @@ const typeDefs = gql`
     #########################################
 
     addEvent(
-      description: String!
-      date: String!
-      time: String!
-      latitude: Float!
-      longitude: Float!
-      sport: String!
-      free: Boolean!
-      creator_id: String!
-      creator_username: String!
+      description: String
+      date: String
+      time: String
+      latitude: Float
+      longitude: Float
+      sport: String
+      free: Boolean
+      creator_id: String
+      creator_username: String
       price: String
       # attending: [ID]
     ): AddEventResponse
