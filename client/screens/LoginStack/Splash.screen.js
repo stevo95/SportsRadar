@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
-import ButtonLightBlue from '../components/button.lightblue.component';
+import ButtonLightBlue from '../../components/button.lightblue.component';
 
 function SplashScreen({navigation}) {
 
@@ -17,7 +17,7 @@ function SplashScreen({navigation}) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('../assets/logo.png')}
+          source={require('../../assets/logo.png')}
           style={styles.logo}
           resizeMode="stretch"
         />

@@ -12,6 +12,7 @@ import MapScreen from '../screens/MainStack/map.screen';
 const MainTab = createBottomTabNavigator();
 
 function CustomTabBarButton({children, onPress}) {
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -24,7 +25,7 @@ function CustomTabBarButton({children, onPress}) {
   );
 }
 
-function MainTabScreen() {
+function MainTabScreen({authInfo}) {
 
 
 
@@ -51,10 +52,10 @@ function MainTabScreen() {
                 type="FontAwesome"
                 name= "map"
                 style={{
-                  color: focused ? 'gold' : 'grey',
+                  color: focused ? 'black' : 'grey',
                 }}
               />
-              <Text style={{color: focused ? 'gold' : 'grey'}}>MAIN</Text>
+              <Text style={{color: focused ? 'black' : 'grey'}}>MAIN</Text>
             </View>
           ),
         }}
@@ -69,10 +70,9 @@ function MainTabScreen() {
                 type="FontAwesome"
                 name= "globe"
                 style={{
-                  color: focused ? 'black' : 'grey',
-                }}
+                  color: focused ? 'black' : 'grey'}}
               />
-              <Text style={{color: focused ? 'black' : 'grey'}}>MAP</Text>
+              {/* <Text style={{color: focused ? '#5ce1e6' : 'grey', fontWeight: 'bold'}}>MAP</Text> */}
             </View>
           ),
           tabBarButton: (props) => (
@@ -81,21 +81,25 @@ function MainTabScreen() {
         }}
         />
 
-      <MainTab.Screen name="Feed" component={ProfileScreen}
+      <MainTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        authInfo= {authInfo}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={styles.iconContainer}>
               <Icon
-                name= "ios-albums"
+                name= "ios-clipboard"
                 style={{
-                  color: focused ? 'gold' : 'black',
+                  color: focused ? 'black' : 'grey',
                 }}
               />
-              <Text style={{color: focused ? 'gold' : 'black'}}>FEED</Text>
+              <Text style={{color: focused ? 'black' : 'black'}}>PROFILE</Text>
             </View>
           ),
         }}
         />
+
     </MainTab.Navigator>
   );
 }

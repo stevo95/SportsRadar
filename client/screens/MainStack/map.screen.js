@@ -1,21 +1,22 @@
+/* eslint-disable curly */
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import { useMutation, useQuery  } from '@apollo/client';
+import { useMutation, useLazyQuery  } from '@apollo/client';
 import {View, StyleSheet, PermissionsAndroid, Dimensions, Text} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-spinkit';
 import CreateEventModal from '../../components/modal.popup.component';
 import EventInfoModal from '../../components/eventInfo.modal.popup.component';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {  ADD_EVENT } from '../../GraphQL/mutationDeclarations';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
 
 const mapStyle = require('../../assets/mapStyle.json');
 
-function MapScreen() {
-  const [uid, setUid] = useState('2');
+function MapScreen({navigation}) {
   const [loading, setLoading] = useState(true);
   const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState();
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
@@ -25,7 +26,7 @@ function MapScreen() {
     latitude: 41.39981990644345,
     longitude: 2.196051925420761,
     latitudeDelta: 0.005,
-    longitudeDelta: 0.020
+    longitudeDelta: 0.020,
   });
 
   const [selectedEvent, setSelectedEvent] = useState({
@@ -53,7 +54,7 @@ function MapScreen() {
     });
 
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
-  const { loadingEvents, loadingError, data } = useQuery(GET_ALL_EVENTS);
+  const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_ALL_EVENTS);
 
 
 
@@ -79,20 +80,20 @@ function MapScreen() {
   };
 
   useEffect(() => {
-
-
     const geoOptions = {
       enableHighAccuracy: true,
       timeOut: 200,
       maximumAge: 1000,
     };
-
     async function initializeData() {
       try {
+        await loadEvents();
+        if (data !== undefined) {
+          setEvents(data.getAllEvents);
+        }
         await requestGeolocationPermission();
         await Geolocation.getCurrentPosition(
           (locationInfo) => {
-            setEvents(data.getAllEvents);
             setUserLatLng(prevState => {
               let coordinates = Object.assign({}, prevState);
               coordinates.latitude = locationInfo.coords.latitude;
@@ -115,7 +116,7 @@ function MapScreen() {
       }
     }
     initializeData();
-  }, []);
+  }, [data]);
 
   function openModal(coordinates) {
     const newCoordinates = Object.assign({}, coordinates);
@@ -124,31 +125,41 @@ function MapScreen() {
   }
 
   async function createHandler(markerData) {
-    markerData.creatorId = uid;
-    console.log('****************************  NEW MARKER **********************************');
-    console.log(markerData);
-    console.log('****************************  NEW MARKER **********************************');
-    const datahere = await addEvent({ variables: {
-      addEventDescription: markerData.description,
-      addEventDate: markerData.date,
-      addEventTime: markerData.time,
-      addEventLatitude: markerData.latitude,
-      addEventLongitude: markerData.longitude,
-      addEventSport: markerData.sport,
-      addEventFree: markerData.free,
-      addEventPrice: markerData.price,
-      addCreator_id: markerData.creatorId,
-    },
-    update: (cache, {data}) => {
-      try {
-        const toWrite = [...data.addEvent.updatedList];
-        setEvents(toWrite);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
-    setCreateEventModalVisible(false);
+    try {
+      const authInfo = await AsyncStorage.getItem('authInfo');
+      const parsedData = authInfo != null ? JSON.parse(authInfo) : null;
+      markerData.creatorId = parsedData.uid;
+      markerData.username = parsedData.username;
+
+      console.log('****************************  NEW MARKER **********************************');
+      console.log(markerData);
+      console.log('****************************  NEW MARKER **********************************');
+
+      await addEvent({ variables: {
+        addEventDescription: markerData.description,
+        addEventDate: markerData.date,
+        addEventTime: markerData.time,
+        addEventLatitude: markerData.latitude,
+        addEventLongitude: markerData.longitude,
+        addEventSport: markerData.sport,
+        addEventFree: markerData.free,
+        addEventPrice: markerData.price,
+        addCreator_id: markerData.creatorId,
+        addCreator_username: markerData.username,
+      },
+      update: (cache, {data}) => {
+        try {
+          const toWrite = [...data.addEvent.updatedList];
+          setEvents(toWrite);
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    });
+      setCreateEventModalVisible(false);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function eventOnPress(idx) {
@@ -156,8 +167,16 @@ function MapScreen() {
     setEventModalVisible(true);
   }
 
-  function renderEvents() {
+  function navHandler(userId) {
+    navigation.navigate('ProfileStack', {
+      screen: 'UserProfile',
+      params: {
+        userId: userId,
+      },
+    });
+  }
 
+  function renderEvents() {
     if (!loading && events !== undefined) {
       const eventsList = events.map((marker, idx) => {
         return (
@@ -184,6 +203,8 @@ function MapScreen() {
         visible={eventModalVisible}
         visibleSetter = {setEventModalVisible}
         eventData = {event}
+        navHandler = {navHandler}
+        userId= {event.creator_id}
       />
     );
   }
@@ -192,7 +213,7 @@ function MapScreen() {
     <View style={styles.container}>
       {
         loading ?
-          <Spinner style={styles.spinner} type={'Circle'} color={'gold'}/>
+          <Spinner style={styles.spinStyle} type={'Circle'} color={'gold'}/>
         :
         <View style={styles.MapViewContainer}>
           <CreateEventModal
@@ -255,7 +276,7 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: 'red',
   },
-  spinner: {
+  spinStyle: {
     width: height_loader,
     height: height_loader,
   },

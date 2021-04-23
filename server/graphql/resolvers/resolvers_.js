@@ -2,26 +2,24 @@
 
 const models = require('../database/database-models/models');
 const {ApolloError}  = require('apollo-server-errors');
-
+1
 module.exports = {
   Query: {
-    // users: async (_, __) => 
-    //   await models.userModels.test(),
-    user: async(_, {id}) => {
-      // id is undefined, not getting passed in from the mutation query
-      // look for solution
+    getUser: async(_, {_id}) => {
+      console.log('in server');
       try {
-        console.log(id);
-        await models.userModels.getUserById(id);
+        console.log('getting user');
+        const user = await models.userModels.getUserById(_id);
+        return user[0];
       } catch (error) {
         console.log(error);
         return error;
       }
     },
     getAllEvents: async( _, __ ) => {
+      console.log('getting all events');
       try {
         const eventsData = await models.eventModels.getAllEvents();
-        console.log(eventsData);
         return eventsData;
       } catch (error) {
         console.log(error);

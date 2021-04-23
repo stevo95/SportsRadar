@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
-import InputField from '../components/inputField.component';
-import ButtonLarge from '../components/button.large.component ';
+import InputField from '../../components/inputField.component';
+import ButtonLarge from '../../components/button.large.component';
 
 function SignUpScreen() {
 
@@ -44,7 +44,7 @@ function SignUpScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('../assets/logo.png')}
+          source={require('../../assets/logo.png')}
           style={styles.logo}
           resizeMode="stretch"
         />

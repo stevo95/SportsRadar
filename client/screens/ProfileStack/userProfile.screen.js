@@ -1,34 +1,41 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import { useFocusEffect } from '@react-navigation/native';
 import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image} from 'react-native';
-import { AirbnbRating } from 'react-native-ratings';
-import { useQuery  } from '@apollo/client';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AirbnbRating } from 'react-native-elements';
+import { useLazyQuery  } from '@apollo/client';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
 
-function ProfileScreen() {
-  const [isMe, setIsMe] = useState(false);
-  const [userId, setUserId] = useState('1');
+function ProfileScreen({ route, navigation }) {
 
-  const { loading, error, data } = useQuery(GET_USER, {
-    variables: { getUserId: userId },
+  const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_USER, {
+    variables: { getUserId: route.params.userId },
   });
+
+  const [username, setUsername] = useState('');
+  const [rating, setRating] = useState(0);
+  const [bio, setBio] = useState('');
 
 
   useEffect(() => {
-    async function getAuthData() {
+
+    async function initializeData() {
       try {
-        const authData = await AsyncStorage.getItem('authInfo');
-        const parsedData = authData !== null ? JSON.parse(authData) : null;
-        setUserId(parsedData.uid);
-        console.log(data);
-      } catch (e) {
-        console.log(e);
+        await loadEvents();
+        setUsername(data.getUser.nickname);
+        setBio(data.getUser.bio);
+        if (route.params.rating !== null) setRating(data.getUser.rating);
+      } catch (error) {
+        console.log(error);
       }
     }
-    getAuthData();
-  }, [data]);
+    initializeData();
+    console.log('user id:');
+    console.log(route.params.userId);
+  }, [data, route.params.rating, route.params.userId]);
+
+  function userRated(value) {
+    console.log(value);
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -41,11 +48,11 @@ function ProfileScreen() {
             }}
           />
         </TouchableOpacity>
-        <Text style={styles.username}>User name</Text>
+        <Text style={styles.username}>{username}</Text>
       </View>
       <View style={styles.card}>
         <View style={styles.bio}>
-          <Text>userData</Text>
+          <Text>{bio}</Text>
         </View>
       </View>
       <View style={styles.card}>
@@ -61,26 +68,20 @@ function ProfileScreen() {
         <AirbnbRating
           style={styles.ratingStars}
           ratingCount={5}
+          defaultRating = {rating}
           size={50}
-          showRating={false}
-          selectedColor = 'gold'
-          unSelectedColor	= 'silver'
-          // ratingBackgroundColor='transparent'
-          // onFinishRating={ratingCompleted}
+          onFinishRating={(userRating) => userRated(userRating)}
+          selectedColor = "gold"
+          unSelectedColor	= "silver"
         />
           {/* <Text style = {styles.eventsText}>Rating component here</Text> */}
         </View>
       </View>
 
-      <View style={styles.card}>
-        <View style={styles.content}>
-          <View style={styles.inputWrapper}>
-            <Text style = {styles.eventsText}>If user === me show input field to post new post</Text>
-          </View>
+      <View style={styles.posts}>
           <ScrollView style={styles.contentWrapper}>
             <Text style = {styles.eventsText}>Show all posts</Text>
           </ScrollView>
-        </View>
       </View>
     </ScrollView>
   );
@@ -131,15 +132,14 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
     padding: 5,
   },
-  content: {
-    // backgroundColor: 'pink',
-  },
   inputWrapper: {
     borderWidth: 1,
     marginBottom: '5%',
   },
   contentWrapper: {
     borderWidth: 1,
+    width: '90%',
+    backgroundColor: 'pink',
   },
   img: {
     height: 250,
@@ -151,7 +151,19 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 20,
-  }
+  },
+  ratingText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    alignSelf: 'center',
+  },
+  posts: {
+    flex: 1,
+    marginBottom: '5%',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+  },
 });
 
 export default ProfileScreen;

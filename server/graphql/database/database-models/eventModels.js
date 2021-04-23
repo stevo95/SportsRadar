@@ -14,6 +14,7 @@ async function addEvent (eventData) {
       sport: eventData.sport,
       free: eventData.free,
       creator_id: eventData.creator_id,
+      creator_username: eventData.creator_username,
       price: eventData.price,
     });
     const updatedList = await getAllEvents();

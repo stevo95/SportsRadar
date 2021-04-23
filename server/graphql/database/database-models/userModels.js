@@ -23,9 +23,11 @@ async function addUser(userData) {
       nickname: userData.nickname,
       email: userData.email,
       password: userData.password,
-      rating: 0,
+      bio: '',
       friends: [],
-      events: []
+      events_attending: [],
+      events_hosting: [],
+      posts: []
     });
     return newUser;
   } catch (error) {

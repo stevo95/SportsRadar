@@ -1,16 +1,44 @@
 /* eslint-disable prettier/prettier */
 import React from 'react';
 import {View, Text, StyleSheet, Button} from 'react-native';
-import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
-import {  useQuery  } from '@apollo/client';
+import {   useMutation  } from '@apollo/client';
+import {  ADD_EVENT } from '../../GraphQL/mutationDeclarations';
 
 function MainScreen() {
-  const { loadingEvents, loadingError, data } = useQuery(GET_ALL_EVENTS);
 
+  const [addEvent, {eventData}] = useMutation(ADD_EVENT);
 
-  function test() {
+  const markerData = {
+    description: 'football',
+    date: 'august',
+    time: '18:00',
+    latitude: 51.2555618,
+    longitude: 25.0856189,
+    sport: 'Football',
+    free: true,
+    price: null,
+    creatorId: 1,
+    creatorUsername: 'Johnny123',
+  };
+
+  function test(markerData) {
     console.log('click');
-    console.log(data);
+    try {
+      const datahere = addEvent({ variables: {
+        addEventDescription: markerData.description,
+        addEventDate: markerData.date,
+        addEventTime: markerData.time,
+        addEventLatitude: markerData.latitude,
+        addEventLongitude: markerData.longitude,
+        addEventSport: markerData.sport,
+        addEventFree: markerData.free,
+        addEventPrice: markerData.price,
+        addCreator_id: markerData.creatorId,
+        addCreator_username: markerData.creatorUsername,
+      }});
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

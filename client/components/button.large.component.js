@@ -1,19 +1,13 @@
-/* eslint-disable prettier/prettier */
 import React from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-function ButtonLarge({onClick, text, color}) {
-
+function ButtonLarge({onClick, text}) {
   return (
-    <TouchableOpacity
-      onPress={onClick}
-      style={styles.container}
-    >
+    <TouchableOpacity onPress={onClick} style={styles.container}>
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#5ce1e6',
@@ -33,4 +27,3 @@ const styles = StyleSheet.create({
 });
 
 export default ButtonLarge;
-

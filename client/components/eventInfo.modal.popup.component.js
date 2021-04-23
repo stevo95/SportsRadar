@@ -5,7 +5,9 @@ import Modal from 'react-native-modal';
 
 import ButtonGold from './button.gold.component ';
 
-function EventInfoModalPopup({visible, visibleSetter, eventData}) {
+function EventInfoModalPopup({visible, visibleSetter, eventData, navHandler, userId}) {
+
+  console.log(eventData);
 
   function hideModal() {
     visibleSetter(false);
@@ -13,6 +15,10 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
 
   function joinHandler() {
     console.log('click');
+  }
+
+  function onPress() {
+    navHandler(userId);
   }
 
   return (
@@ -26,7 +32,10 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
       backdropOpacity= {0.3}
     >
       <View style={styles.left}>
-        <TouchableOpacity style={styles.profileContainer}>
+        <TouchableOpacity 
+          style={styles.profileContainer}
+          onPress={onPress}
+        >
             <Image
               source={require('../assets/user.png')}
               style = {styles.image}
@@ -35,7 +44,7 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
       </View>
 
       <View style={styles.right}>
-        <Text style={styles.title}> {eventData.sport} with USERNAME</Text>
+        <Text style={styles.title}> {eventData.sport} with {eventData.creator_username}</Text>
         {
           eventData.free ?
           <Text style={styles.text}>Free to join!</Text>
@@ -59,7 +68,7 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
   const styles = StyleSheet.create({
     modal: {
       zIndex: 1,
-      width: '90%',
+      width: '95%',
       marginTop: '130%',
       alignSelf: 'center',
       backgroundColor: '#5ce1e6',
@@ -69,11 +78,11 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
       paddingVertical: 10,
     },
     left: {
-      width: '40%',
+      width: '37%',
       justifyContent: 'center',
     },
     right: {
-      width: '60%',
+      width: '63%',
       justifyContent: 'space-around',
       borderLeftWidth: 1,
       borderLeftColor: '#f2f2f2',
@@ -91,7 +100,7 @@ function EventInfoModalPopup({visible, visibleSetter, eventData}) {
     },
     title: {
       fontWeight: 'bold',
-      fontSize: 20,
+      fontSize: 18,
       textAlign: 'left',
     },
     text: {

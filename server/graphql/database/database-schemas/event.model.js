@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     date: {type: DataTypes.STRING, allowNull: false},
     time: {type: DataTypes.STRING, allowNull: false},
     creator_id: {type: DataTypes.BIGINT, allowNull: false},
+    creator_username: {type: DataTypes.STRING, allowNull: false},
     description: {type: DataTypes.STRING, allowNull: false},
     latitude: {type: DataTypes.FLOAT, allowNull: false},
     longitude: {type: DataTypes.FLOAT, allowNull: false},

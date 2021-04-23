@@ -13,10 +13,13 @@ const typeDefs = gql`
     nickname: String!
     email: String!
     password: String!
-    img_url: String!
-    rating: Float!
+    img_url: String
+    rating: Float
+    bio: String
     friends: [User]
-    events: [Event]
+    events_attending: [Event]
+    events_hosting: [Event]
+    posts: [Post]
   }
   type Event {
     _id: ID!
@@ -28,6 +31,7 @@ const typeDefs = gql`
     sport: String!
     free: Boolean!
     creator_id: String!
+    creator_username: String!
     price: String
     # comments: [Comment]!
     # title: String!
@@ -46,8 +50,9 @@ const typeDefs = gql`
     _id: ID!
     author: User!
     content: String!
-    likes: [Like]!
-    comments: [Comment]!
+    likes: [Like]
+    comments: [Comment]
+    image: [String]
   }
 
   type Like {
@@ -65,7 +70,7 @@ const typeDefs = gql`
 #########################################
 
   type Query {
-    user(_id: ID!): User
+    getUser(_id: ID!): User
     users: [User]!
     getAllEvents: [Event]! 
   }
@@ -80,10 +85,6 @@ const typeDefs = gql`
       nickname: String!
       email: String!
       password: String!
-      img_url: String
-      rating: Float
-      friends: [ID]
-      events: [ID]
     ): AddUserResponse
 
     updateUserRating(
@@ -116,6 +117,7 @@ const typeDefs = gql`
       sport: String!
       free: Boolean!
       creator_id: String!
+      creator_username: String!
       price: String
       # attending: [ID]
     ): AddEventResponse
