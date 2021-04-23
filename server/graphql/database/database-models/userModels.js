@@ -36,6 +36,24 @@ async function addUser(userData) {
   }
 }
 
+async function updateUserHosting(userData) {
+  try {
+    const user = await db.users.findByPk(userData._id);
+    console.log(user);
+    const toLoad = [...user.events_hosting, userData.event];
+    const updatedHosting = await db.users.update({events_hosting: toLoad}, {
+      where: {
+        _id: userData._id
+      }
+    });
+    const updatedUser = await db.users.findByPk(userData._id);
+    return updatedUser.events_hosting;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 async function updateUserRating(_, {id}, {newRating}) {
   try {
     const userRating = await db.user.update({rating: newRating}, {
@@ -62,19 +80,6 @@ async function updateUserFriends(_, {id}, {newFriends}) {
   }
 }
 
-async function updateUserEvents(_, {id}, {newEvents}) {
-  try {
-    const userEvents = await db.user.update({events: newEvents}, {
-      where: {
-        _id: id
-      }
-    });
-    return userEvents;
-  } catch (error) {
-    return error;
-  }
-}
-
 async function deleteUser(_, {_id}) {
   console.log(_);
   console.log(_id);
@@ -92,4 +97,4 @@ async function deleteUser(_, {_id}) {
   }
 }
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserEvents, deleteUser};
+module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, deleteUser};

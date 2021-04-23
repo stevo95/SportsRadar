@@ -50,6 +50,19 @@ module.exports = {
       console.log(error);
       throw new ApolloError(error);
     }
+  },
+  updateUserHosting: async (_, userData) => {
+    try{
+      const updatedUser = await models.userModels.updateUserHosting(userData);
+      let responseMessage = {
+        success: true,
+        message: 'Successfully updated',
+      }
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
   }
   }
 }

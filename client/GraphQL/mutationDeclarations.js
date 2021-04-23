@@ -64,4 +64,19 @@ const ADD_EVENT = gql`
   }
 `;
 
-module.exports = {ADD_USER,  ADD_EVENT};
+const UPDATE_HOSTING = gql`
+  mutation UpdatedUserHosting(
+    $updateUserHostingId: ID!
+    $updateUserHostingEvent: ID!
+  ) {
+    updateUserHosting(
+      _id: $updateUserHostingId
+      event: $updateUserHostingEvent
+    ) {
+      success
+      message
+    }
+  }
+`;
+
+module.exports = {ADD_USER, ADD_EVENT, UPDATE_HOSTING};

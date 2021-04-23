@@ -95,14 +95,16 @@ const typeDefs = gql`
       events: [ID]!
     ): [String]
 
-    updateUserEvents(
+    updateUserAttending(
       _id: ID!
-      events: [ID]!
-    ): [String]
+      event: ID!
+    ): UpdateResponse
 
-    deleteUser(
+    updateUserHosting(
       _id: ID!
-    ): User
+      event: ID!
+    ): UpdateResponse
+
 
     #########################################
     ##############  EVENTS  #################
@@ -138,6 +140,11 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     user: User
+  }
+
+  type UpdateResponse {
+    success: Boolean!
+    message: String!
   }
 `
 module.exports = typeDefs;
