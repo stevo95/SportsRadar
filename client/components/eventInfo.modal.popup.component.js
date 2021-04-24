@@ -1,26 +1,53 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {useMutation} from '@apollo/client';
 import Modal from 'react-native-modal';
 
 import ButtonGold from './button.gold.component ';
+import {USER_JOINED_EVENT} from '../GraphQL/mutationDeclarations';
 
 function EventInfoModalPopup({
   visible,
   visibleSetter,
   eventData,
   navHandler,
-  userId,
+  uid,
 }) {
+  const [userJoined, {hostingData}] = useMutation(USER_JOINED_EVENT);
+
   function hideModal() {
     visibleSetter(false);
   }
 
-  function joinHandler() {
-    console.log('click');
+  function onPress() {
+    navHandler(eventData.creator_id);
   }
 
-  function onPress() {
-    navHandler(userId);
+  function deleteHandler() {
+    console.log('Delete the event');
+  }
+
+  async function joinHandler() {
+    try {
+      console.log('clicked the join handler');
+      const updateUserHosting = await userJoined({
+        variables: {
+          userId: uid,
+          eventId: eventData._id,
+        },
+      });
+      console.log(updateUserHosting);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function renderButton() {
+    return uid === eventData.creator_id ? (
+      <ButtonGold text="Delete" color="red" onClick={deleteHandler} />
+    ) : (
+      <ButtonGold text="Join" onClick={joinHandler} />
+    );
   }
 
   return (
@@ -51,9 +78,7 @@ function EventInfoModalPopup({
         <Text style={styles.text}>{eventData.date}</Text>
         <Text style={styles.text}>{eventData.time}</Text>
         <Text style={styles.text}>{eventData.description}</Text>
-        <View style={styles.buttonWrapper}>
-          <ButtonGold text="Join" onClick={joinHandler} />
-        </View>
+        <View style={styles.buttonWrapper}>{renderButton()}</View>
       </View>
     </Modal>
   );

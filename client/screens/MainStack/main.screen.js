@@ -8,6 +8,9 @@ function MainScreen() {
 
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
 
+  // this is a screen where I copy paste my queries / mutation to test with a button click
+  // it does nothing, it`s irrelevant and will be deleted ignore it
+
   const markerData = {
     description: 'football',
     date: 'august',

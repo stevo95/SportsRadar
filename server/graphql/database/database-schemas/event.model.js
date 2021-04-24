@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     sport: {type: DataTypes.STRING, allowNull: false},
     free: {type: DataTypes.BOOLEAN, allowNull: false},
     price: {type: DataTypes.STRING, allowNull: true},
+    attendance: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: false},
   },{
     timestamps: false,
   });

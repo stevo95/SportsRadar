@@ -2,12 +2,13 @@
 import React from 'react';
 import {Text, StyleSheet, TouchableOpacity} from 'react-native';
 
-function ButtonLarge({onClick, text}) {
+function ButtonLarge({onClick, text, color = 'gold'}) {
+
 
   return (
     <TouchableOpacity
       onPress={onClick}
-      style={styles.container}
+      style={[styles.container, {backgroundColor: color}]}
     >
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>

@@ -17,6 +17,7 @@ async function addEvent (eventData) {
       creator_id: eventData.creator_id,
       creator_username: eventData.creator_username,
       price: eventData.price,
+      attendance: [eventData.creator_id]
     });
     const updatedList = await getAllEvents();
     return updatedList;
@@ -35,20 +36,20 @@ async function getAllEvents() {
   }
 }
 
-async function updateEventAttendance(userData) {
-  // try {
-  //   const user = await db.users.findByPk(userData._id);
-  //   const toLoad = [...user.events_attending, userData.eventId];
-  //   const updatedHosting = await db.users.update({events_hosting: toLoad}, {
-  //     where: {
-  //       _id: userData._id
-  //     }
-  //   });
-  //   return;
-  // } catch (error) {
-  //   console.log(error);
-  //   return error;
-  // }
+async function updateEventAttendance(mutationData) {
+  try {
+    const event = await db.events.findByPk(mutationData.eventId);
+    const toLoad = [...event.attendance, mutationData._id];
+    const attendance = await db.events.update({attendance: toLoad}, {
+      where: {
+        _id: mutationData.eventId
+      }
+    });
+    return;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
 
 module.exports = {addEvent, getAllEvents, updateEventAttendance}

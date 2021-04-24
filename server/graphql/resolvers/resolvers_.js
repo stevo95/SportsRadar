@@ -65,10 +65,11 @@ module.exports = {
     }
   },
   userJoinedEvent: async (_, mutationData) => {
+    console.log('in server');
     console.log(mutationData);
     try{
       await models.userModels.updateUserAttending(mutationData);
-      await models.userModels.updateUserAttending(mutationData);
+      await models.eventModels.updateEventAttendance(mutationData);
       let responseMessage = {
         success: true,
         message: 'Successfully updated',

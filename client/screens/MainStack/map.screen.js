@@ -18,6 +18,7 @@ const mapStyle = require('../../assets/mapStyle.json');
 
 function MapScreen({navigation}) {
   const [loading, setLoading] = useState(true);
+  const [authData, setAuthData] = useState({uid: '0', username: 'default'});
   const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState();
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
@@ -88,6 +89,9 @@ function MapScreen({navigation}) {
         if (data !== undefined) {
           setEvents(data.getAllEvents);
         }
+        const authInfo = await AsyncStorage.getItem('authInfo');
+        const parsedData = await authInfo != null ? JSON.parse(authInfo) : null;
+        setAuthData(parsedData);
         await requestGeolocationPermission();
         await Geolocation.getCurrentPosition(
           (locationInfo) => {
@@ -123,10 +127,8 @@ function MapScreen({navigation}) {
 
   async function createHandler(markerData) {
     try {
-      const authInfo = await AsyncStorage.getItem('authInfo');
-      const parsedData = await authInfo != null ? JSON.parse(authInfo) : null;
-      markerData.creatorId = parsedData.uid;
-      markerData.username = parsedData.username;
+      markerData.creatorId = authData.uid;
+      markerData.username = authData.username;
 
       console.log('****************************  NEW MARKER **********************************');
       console.log(markerData);
@@ -211,7 +213,7 @@ function MapScreen({navigation}) {
         visibleSetter = {setEventModalVisible}
         eventData = {event}
         navHandler = {navHandler}
-        userId= {event.creator_id}
+        uid= {authData.uid}
       />
     );
   }

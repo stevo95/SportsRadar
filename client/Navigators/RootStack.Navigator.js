@@ -18,7 +18,7 @@ function RootStackScreen() {
   useEffect(() => {
     async function storeAuthData() {
       try {
-        const jsonValue = JSON.stringify({uid: '3', username: 'SailorJerry'});
+        const jsonValue = await JSON.stringify({uid: '4', username: 'Stefan123'});
         await AsyncStorage.setItem('authInfo', jsonValue);
       } catch (error) {
         console.log(error);

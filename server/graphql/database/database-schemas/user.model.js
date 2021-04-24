@@ -10,8 +10,8 @@ module.exports = (sequelize, DataTypes) => {
     bio: {type: DataTypes.STRING, allowNull: false},
     rating: {type: DataTypes.REAL, allowNull: true},
     friends: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
-    events_attending: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
-    events_hosting: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
+    events_attending: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: false},
+    events_hosting: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: false},
     posts: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
   },{
     timestamps: false,
