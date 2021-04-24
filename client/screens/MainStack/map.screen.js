@@ -146,9 +146,9 @@ function MapScreen({navigation}) {
         addEventCreatorUsername: markerData.username,
         addEventPrice: markerData.price,
       },
-      update: (cache, {data}) => {
+      update: (cache, {resultData}) => {
         try {
-          const toWrite = [...data.addEvent.updatedList];
+          const toWrite = [...resultData.addEvent.updatedList];
           setEvents(toWrite);
         } catch (error) {
           console.log('error');
@@ -161,7 +161,7 @@ function MapScreen({navigation}) {
     console.log(newEventId);
     console.log(typeof newEventId);
     const updateUserHosting = await updateHosting({variables: {
-      updateUserHostingId: parsedData.uid,
+      updateUserHostingId: authData.uid,
       updateUserHostingEventId: newEventId,
     }});
     console.log(updateUserHosting);

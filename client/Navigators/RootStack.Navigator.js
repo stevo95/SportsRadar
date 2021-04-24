@@ -23,7 +23,7 @@ function RootStackScreen() {
       } catch (error) {
         console.log(error);
       }
-    };
+    }
     storeAuthData();
   }, []);
 
