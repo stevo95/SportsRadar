@@ -23,6 +23,14 @@ module.exports = {
         throw new ApolloError(error);
       }
     },
+    logIn: async (_,  userData ) => {
+      try {
+        const user = await models.userModels.logIn(userData);
+        return user;
+      } catch (error) {
+        throw new ApolloError(error);
+      }
+    },
   },
   Mutation: {
     addUser: async (_,  userData ) => {

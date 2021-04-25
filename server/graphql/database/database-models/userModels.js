@@ -20,6 +20,21 @@ async function getUserById(id) {
 async function addUser(userData) {
   try {
     await db.users.sync();
+    const checkEmail = await db.users.findOne({ where: { email: userData.email } });
+    if (checkEmail === null) {
+      const checkUsername = await db.users.findOne({ where: { nickname: userData.nickname } });
+      if (checkUsername !== null) {
+        return {
+          success: false,
+          message: 'Username is already taken.'
+        }
+      }
+    } else {
+      return {
+        success: false,
+        message: 'Email already exists!'
+      }
+    }
     const newUser = await db.users.create({
       nickname: userData.nickname,
       email: userData.email,
@@ -30,8 +45,34 @@ async function addUser(userData) {
       events_hosting: [],
       posts: []
     });
-    console.log(newUser);
-    return newUser;
+    return {
+      success: true,
+      message: 'User created',
+      user: newUser
+    };
+  } catch (error) {
+    return error;
+  }
+}
+
+async function logIn(userData) {
+  try {
+    const user = await db.users.findOne({ where: { email: userData.email } });
+    if (user === null) {
+      return {
+        success: false,
+        message: 'Email does not exist',
+      }
+    }
+    if (userData.password !== user.password) return {
+      success: false,
+      message: 'Wrong password!'
+    }
+    return {
+      success: true,
+      message: 'Log in approved',
+      user: user,
+    }
   } catch (error) {
     return error;
   }
@@ -120,4 +161,4 @@ async function eventWasDeleted(mutationData) {
 //   }
 // }}
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted};
+module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn};

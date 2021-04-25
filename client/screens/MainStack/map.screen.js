@@ -50,9 +50,9 @@ function MapScreen({navigation}) {
       latitude: 41.39981990644345,
       longitude: 2.196051925420761,
     });
-  const [addEvent, {eventData}] = useMutation(ADD_EVENT);
-  const [updateHosting, {hostingData}] = useMutation(UPDATE_HOSTING);
-  const [loadEvents, {called , loadingError, data, refetch }] = useLazyQuery(GET_ALL_EVENTS);
+  const [addEvent] = useMutation(ADD_EVENT);
+  const [updateHosting] = useMutation(UPDATE_HOSTING);
+  const [loadEvents, {data, refetch }] = useLazyQuery(GET_ALL_EVENTS);
 
   const requestGeolocationPermission = async () => {
     try {

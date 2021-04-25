@@ -1,15 +1,19 @@
 /* eslint-disable prettier/prettier */
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import InputField from '../../components/inputField.component';
 import ButtonLarge from '../../components/button.large.component';
+import { useMutation } from '@apollo/client';
+import { ADD_USER } from '../../GraphQL/mutationDeclarations';
 
-function SignUpScreen() {
+function SignUpScreen({navigation}) {
 
   const [newUserData, setNewUserData] = useState({username: '', email: '', password: ''});
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [addUser] = useMutation(ADD_USER);
 
   const usernameInput = (usernameText) => {
     const newData = newUserData;
@@ -32,12 +36,25 @@ function SignUpScreen() {
     setNewUserData(newData);
   };
 
-  function signUp() {
-    console.log(newUserData);
-    setEmail('');
-    setPassword('');
-    setUsername('');
-    setNewUserData({email: '', password: ''});
+  async function signUp() {
+    try {
+      const signUpResult = await addUser({ variables: {
+        addUserNickname: newUserData.username,
+        addUserEmail: newUserData.email,
+        addUserPassword: newUserData.password,
+      }});
+      if (signUpResult.data.addUser.success) {
+        const jsonValue = await JSON.stringify({uid: signUpResult.data.addUser.user._id, username: signUpResult.data.addUser.user.nickname});
+        await AsyncStorage.setItem('authInfo', jsonValue);
+      }
+      setEmail('');
+      setPassword('');
+      setUsername('');
+      setNewUserData({email: '', password: ''});
+      navigation.navigate('MainTabScreen');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (

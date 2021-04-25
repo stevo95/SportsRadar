@@ -15,6 +15,7 @@ const ADD_USER = gql`
       message
       user {
         _id
+        nickname
       }
     }
   }

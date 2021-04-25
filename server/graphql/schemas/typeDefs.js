@@ -35,7 +35,6 @@ const typeDefs = gql`
     price: String
     attendance: [String]
     # comments: [Comment]!
-    # title: String!
     # img_url: String!
   }
 
@@ -72,6 +71,7 @@ const typeDefs = gql`
 
   type Query {
     getUser(_id: ID!): User
+    logIn(email: String!, password: String!): AuthResponse
     users: [User]!
     getAllEvents: [Event]! 
   }
@@ -86,7 +86,7 @@ const typeDefs = gql`
       nickname: String!
       email: String!
       password: String!
-    ): AddUserResponse
+    ): AuthResponse
 
     updateUserRating(
       rating: Float!
@@ -154,7 +154,7 @@ const typeDefs = gql`
     event: Event!
   }
 
-  type AddUserResponse {
+  type AuthResponse {
     success: Boolean!
     message: String!
     user: User
