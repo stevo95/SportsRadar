@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, Image, Dimensions, PermissionsAndroid} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLazyQuery } from '@apollo/client';
 import InputFieldLarge from '../../components/inputField.large.component';
@@ -8,11 +9,34 @@ import ButtonLarge from '../../components/button.large.component';
 import { USER_SIGN_IN } from '../../GraphQL/queriesDeclarations';
 
 function SignInScreen({navigation}) {
-
+  const [me, setMe] = useState();
   const [userData, setUserData] = useState({email: '', password: ''});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [querySignIn, {data}] = useLazyQuery(USER_SIGN_IN);
+  const [querySignIn, {loading, error , data}] = useLazyQuery(USER_SIGN_IN);
+
+  useEffect(() => {
+    async function authorize() {
+      try {
+        console.log('authorizing');
+        console.log(data);
+        if (data) {
+          if (data.logIn.success) signIn();
+        }
+        const authData = await AsyncStorage.getItem('authInfo');
+        const parsed = authData !== null ? JSON.parse(authData) : null;
+        if (parsed.uid !== '') {
+          setEmail('');
+          setPassword('');
+          setUserData({email: '', password: ''});
+          navigation.navigate('MainTabScreen');
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    authorize();
+  },[data]);
 
   const emailInput = (emailText) => {
     const newData = userData;
@@ -28,25 +52,24 @@ function SignInScreen({navigation}) {
     setUserData(newData);
   };
 
-  async function signIn() {
+  async function authorizeWithServer() {
     try {
-      console.log(userData);
       await querySignIn({ variables: {
         logInEmail: userData.email,
         logInPassword: userData.password,
       }});
-      if (data.logIn.success) {
-        const jsonValue = await JSON.stringify({uid: data.logIn.user._id, username: data.logIn.user.nickname});
-        await AsyncStorage.setItem('authInfo', jsonValue);
-      }
-    } catch (error) {
+    } catch (err) {
+        console.log(error);
+    }
+  }
+
+  async function signIn() {
+    try {
+      const jsonValue = await JSON.stringify({uid: data.logIn.user._id, username: data.logIn.user.nickname});
+      await AsyncStorage.setItem('authInfo', jsonValue);
+    } catch (err) {
       console.log(error);
     }
-    console.log(userData);
-    setEmail('');
-    setPassword('');
-    setUserData({email: '', password: ''});
-    navigation.navigate('MainTabScreen');
   }
 
   return (
@@ -83,7 +106,7 @@ function SignInScreen({navigation}) {
           featherColor="grey"
         />
         <View style={styles.button}>
-          <ButtonLarge onClick={signIn} text={'Sign In'} />
+          <ButtonLarge onClick={authorizeWithServer} text={'Sign In'} />
         </View>
       </View>
     </View>

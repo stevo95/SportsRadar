@@ -3,31 +3,34 @@ import React, {useState, useEffect} from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image} from 'react-native';
 import { AirbnbRating } from 'react-native-ratings';
-import { useQuery  } from '@apollo/client';
+import { useLazyQuery  } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
 
 function ProfileScreen() {
-  const [isMe, setIsMe] = useState(false);
-  const [userId, setUserId] = useState('1');
+  const [userId, setUserId] = useState('0');
 
-  const { loading, error, data } = useQuery(GET_USER, {
+  const [loadUser, {data, refetch }] = useLazyQuery(GET_USER, {
     variables: { getUserId: userId },
   });
 
 
   useEffect(() => {
-    async function getAuthData() {
+    async function initData() {
       try {
         const authData = await AsyncStorage.getItem('authInfo');
         const parsedData = authData !== null ? JSON.parse(authData) : null;
-        setUserId(parsedData.uid);
+        console.log('in profile screen');
+        console.log(parsedData.uid);
+        console.log(parsedData.username);
+        await setUserId(parsedData.uid);
+        await loadUser();
         console.log(data);
       } catch (e) {
         console.log(e);
       }
     }
-    getAuthData();
+    initData();
   }, [data]);
 
   return (

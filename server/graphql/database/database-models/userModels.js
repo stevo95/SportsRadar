@@ -57,6 +57,8 @@ async function addUser(userData) {
 
 async function logIn(userData) {
   try {
+    console.log('**************************************************** login *************************************************');
+    console.log(userData);
     const user = await db.users.findOne({ where: { email: userData.email } });
     if (user === null) {
       return {
