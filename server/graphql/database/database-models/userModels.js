@@ -13,7 +13,6 @@ async function getUserById(id) {
     });
     return user;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }
@@ -31,9 +30,9 @@ async function addUser(userData) {
       events_hosting: [],
       posts: []
     });
+    console.log(newUser);
     return newUser;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }
@@ -43,7 +42,6 @@ async function updateUserHosting(mutationData) {
     const updatedUser = await helpers.updateSingleHosting(mutationData._id, mutationData.eventId,'add');
     return updatedUser.events_hosting;
   } catch (error) {
-    console.log(error);
     return error;
   }
 }
@@ -53,7 +51,6 @@ async function updateUserAttending(userData) {
     helpers.updateSingleAttending(userData._id, userData.eventId, 'join');
     return;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -62,7 +59,6 @@ async function userLeftEvent(userData) {
   try {
     helpers.updateSingleAttending(userData._id, userData.eventId, 'leave');
   } catch (error) {
-    console.log(error);
     return error;
   }
 };
@@ -114,7 +110,6 @@ async function eventWasDeleted(mutationData) {
     }
     return;
   } catch (error) {
-    console.log(error);
     return error;
   }
 };

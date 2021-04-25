@@ -47,18 +47,19 @@ const ADD_EVENT = gql`
     ) {
       success
       message
-      updatedList {
+      event {
         _id
         description
         date
         time
         latitude
-        sport
         longitude
+        sport
         free
         creator_id
         creator_username
         price
+        attendance
       }
     }
   }

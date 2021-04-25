@@ -19,8 +19,7 @@ async function addEvent (eventData) {
       price: eventData.price,
       attendance: [eventData.creator_id]
     });
-    const updatedList = await getAllEvents();
-    return updatedList;
+    return newEvent;
   } catch(error) {
     return error;
   }

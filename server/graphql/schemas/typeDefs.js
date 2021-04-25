@@ -134,7 +134,7 @@ const typeDefs = gql`
       creator_username: String
       price: String
       # attending: [ID]
-    ): EventResponse
+    ): AddEventResponse
 
   }
 
@@ -146,6 +146,12 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     updatedList: [Event]!
+  }
+
+  type AddEventResponse {
+    success: Boolean!
+    message: String!
+    event: Event!
   }
 
   type AddUserResponse {

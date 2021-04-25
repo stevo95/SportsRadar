@@ -27,7 +27,6 @@ function EventInfoModalPopup({
 
   useEffect(() => {
     if (eventData.attendance !== undefined) {
-      console.log('evaluating eventData.attendacne.includes');
       if (eventData.attendance.includes(uid)) {
         setJoined(true);
       }
@@ -86,7 +85,7 @@ function EventInfoModalPopup({
         },
       });
       setJoined(false);
-      await updateEvents(updatedEvents.data.userJoinedEvent.updatedList);
+      await updateEvents();
     } catch (error) {
       console.log(error);
     }

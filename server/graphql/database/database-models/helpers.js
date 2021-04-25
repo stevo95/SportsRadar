@@ -27,6 +27,7 @@ async function updateSingleHosting(userId, eventId, action) {
         }
       });
       const updatedUser = await db.users.findByPk(userId);
+      return updatedUser;
     } else {
       throw new Error('Selected database action is undefined. Check database models');
     }

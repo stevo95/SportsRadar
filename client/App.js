@@ -13,7 +13,19 @@ const client = new ApolloClient({
   // 192.168.1.178
   // const baseURL = 'http://192.168.1.178:3002';
   uri: 'http://192.168.1.178:4000',
-  cache: new InMemoryCache({}),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          getAllEvents: {
+            merge(existing, incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 function App() {

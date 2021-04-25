@@ -1,5 +1,22 @@
 import {gql} from '@apollo/client';
 
+// const GET_ALL_EVENTS = gql`
+//   {
+//     _id
+//     description
+//     date
+//     time
+//     latitude
+//     longitude
+//     sport
+//     free
+//     creator_id
+//     creator_username
+//     attendance
+//     price
+//   }
+// `;
+
 const GET_ALL_EVENTS = gql`
   query GetAllEvents {
     getAllEvents {

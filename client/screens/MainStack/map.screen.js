@@ -82,9 +82,8 @@ function MapScreen({navigation}) {
     };
     async function initializeData() {
       try {
-        await loadEvents();
+        if (data === undefined) await loadEvents();
         if (data !== undefined ) {
-          console.log('setting data');
           setEvents(data.getAllEvents);
         }
         const authInfo = await AsyncStorage.getItem('authInfo');
@@ -138,22 +137,13 @@ function MapScreen({navigation}) {
         addEventCreatorId: markerData.creatorId,
         addEventCreatorUsername: markerData.username,
         addEventPrice: markerData.price,
-      },
-      update: (cache, {data}) => {
-        try {
-          const toWrite = [...data.addEvent.updatedList];
-          setEvents(toWrite);
-        } catch (error) {
-          console.log('error');
-          console.log(error);
-        }
-      },
-    });
-    const newEventId = addEventResult.data.addEvent.updatedList[addEventResult.data.addEvent.updatedList.length - 1]._id;
-    const updateUserHosting = await updateHosting({variables: {
-      updateUserHostingId: authData.uid,
-      updateUserHostingEventId: newEventId,
-    }});
+      }});
+      await refetch();
+      const newEventId = addEventResult.data.addEvent.event._id;
+      await updateHosting({variables: {
+        updateUserHostingId: authData.uid,
+        updateUserHostingEventId: newEventId,
+      }});
       setCreateEventModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -190,8 +180,6 @@ function MapScreen({navigation}) {
         );
       });
       return eventsList;
-    } else {
-      return;
     }
   }
 
