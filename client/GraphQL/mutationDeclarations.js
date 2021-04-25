@@ -84,6 +84,20 @@ const USER_JOINED_EVENT = gql`
     userJoinedEvent(_id: $userId, eventId: $eventId) {
       success
       message
+      updatedList {
+        _id
+        description
+        date
+        time
+        latitude
+        longitude
+        sport
+        free
+        creator_id
+        creator_username
+        price
+        attendance
+      }
     }
   }
 `;
@@ -92,14 +106,42 @@ const USER_LEFT_EVENT = gql`
     userLeftEvent(_id: $userId, eventId: $eventId) {
       success
       message
+      updatedList {
+        _id
+        description
+        date
+        time
+        latitude
+        longitude
+        sport
+        free
+        creator_id
+        creator_username
+        price
+        attendance
+      }
     }
   }
 `;
-const DELETE_EVENT = gql`
+const REMOVE_EVENT = gql`
   mutation DeleteEvent($userId: String!, $eventId: String!) {
     deleteEvent(_id: $userId, eventId: $eventId) {
       success
       message
+      updatedList {
+        _id
+        description
+        date
+        time
+        latitude
+        longitude
+        sport
+        free
+        creator_id
+        creator_username
+        price
+        attendance
+      }
     }
   }
 `;
@@ -110,4 +152,5 @@ module.exports = {
   UPDATE_HOSTING,
   USER_JOINED_EVENT,
   USER_LEFT_EVENT,
+  REMOVE_EVENT,
 };

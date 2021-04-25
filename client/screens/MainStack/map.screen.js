@@ -52,7 +52,7 @@ function MapScreen({navigation}) {
     });
   const [addEvent, {eventData}] = useMutation(ADD_EVENT);
   const [updateHosting, {hostingData}] = useMutation(UPDATE_HOSTING);
-  const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_ALL_EVENTS);
+  const [loadEvents, {called , loadingError, data, refetch }] = useLazyQuery(GET_ALL_EVENTS);
 
   const requestGeolocationPermission = async () => {
     try {
@@ -127,11 +127,6 @@ function MapScreen({navigation}) {
     try {
       markerData.creatorId = authData.uid;
       markerData.username = authData.username;
-
-      console.log('****************************  NEW MARKER **********************************');
-      console.log(markerData);
-      console.log('****************************  NEW MARKER **********************************');
-
       const addEventResult = await addEvent({ variables: {
         addEventDescription: markerData.description,
         addEventDate: markerData.date,
@@ -201,16 +196,19 @@ function MapScreen({navigation}) {
   }
 
   function renderEventInfo(event) {
-    return (
-      <EventInfoModal
-        visible={eventModalVisible}
-        visibleSetter = {setEventModalVisible}
-        eventData = {event}
-        navHandler = {navHandler}
-        uid= {authData.uid}
-        setEvents = {setEvents}
-      />
-    );
+    if (eventModalVisible) {
+      return (
+        <EventInfoModal
+          visible={eventModalVisible}
+          visibleSetter = {setEventModalVisible}
+          eventData = {event}
+          navHandler = {navHandler}
+          uid= {authData.uid}
+          setEvents = {setEvents}
+          refetchEvents = {refetch}
+        />
+      );
+    }
   }
 
   return (

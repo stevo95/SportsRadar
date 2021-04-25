@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
 import {useMutation} from '@apollo/client';
 import Modal from 'react-native-modal';
@@ -7,6 +8,7 @@ import ButtonGold from './button.gold.component ';
 import {
   USER_JOINED_EVENT,
   USER_LEFT_EVENT,
+  REMOVE_EVENT,
 } from '../GraphQL/mutationDeclarations';
 
 function EventInfoModalPopup({
@@ -16,51 +18,75 @@ function EventInfoModalPopup({
   navHandler,
   uid,
   setEvents,
+  refetchEvents,
 }) {
-  const [userJoined, {joinedData}] = useMutation(USER_JOINED_EVENT);
-  const [userLeft, {leftData}] = useMutation(USER_LEFT_EVENT);
+  const [userJoined] = useMutation(USER_JOINED_EVENT);
+  const [userLeft] = useMutation(USER_LEFT_EVENT);
+  const [removeEvent] = useMutation(REMOVE_EVENT);
+  const [joined, setJoined] = useState(false);
+
+  useEffect(() => {
+    if (eventData.attendance !== undefined) {
+      console.log('evaluating eventData.attendacne.includes');
+      if (eventData.attendance.includes(uid)) {
+        setJoined(true);
+      }
+    }
+  }, [joined]);
 
   function hideModal() {
     visibleSetter(false);
   }
 
-  function updateEvents() {
-    // setEvents('new');
+  async function updateEvents(eventList) {
+    // setEvents(eventList);
+    refetchEvents();
   }
 
   function openProfile() {
     navHandler(eventData.creator_id);
   }
 
-  function deleteHandler() {
-    console.log('Delete the event');
-  }
-
-  async function joinHandler() {
+  async function deleteHandler() {
     try {
-      const updateUserAttending = await userJoined({
+      const removeResponse = await removeEvent({
         variables: {
           userId: uid,
           eventId: eventData._id,
         },
       });
-      console.log(updateUserAttending);
+      await updateEvents(removeResponse.data.deleteEvent.updatedList);
+      hideModal();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function joinHandler() {
+    try {
+      const updatedEvents = await userJoined({
+        variables: {
+          userId: uid,
+          eventId: eventData._id,
+        },
+      });
+      await updateEvents(updatedEvents.data.userJoinedEvent.updatedList);
+      setJoined(true);
     } catch (error) {
       console.log(error);
     }
   }
 
   async function cancelHandler() {
-    console.log('leave event');
     try {
-      const leaveEvent = await userLeft({
+      const updatedEvents = await userLeft({
         variables: {
           userId: uid,
           eventId: eventData._id,
         },
       });
-      console.log(leaveEvent);
-      console.log('cancel event attendance');
+      setJoined(false);
+      await updateEvents(updatedEvents.data.userJoinedEvent.updatedList);
     } catch (error) {
       console.log(error);
     }
@@ -75,7 +101,8 @@ function EventInfoModalPopup({
   }
 
   function isAttending() {
-    return eventData.attendance.includes(uid) ? (
+    // return eventData.attendance.includes(uid) ? (
+    return joined ? (
       <ButtonGold text="Cancel" onClick={cancelHandler} />
     ) : (
       <ButtonGold text="Join" onClick={joinHandler} />

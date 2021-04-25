@@ -157,6 +157,7 @@ const typeDefs = gql`
   type UpdateResponse {
     success: Boolean!
     message: String!
+    updatedList: [Event]
   }
 
 `

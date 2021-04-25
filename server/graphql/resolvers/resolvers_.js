@@ -68,9 +68,11 @@ module.exports = {
     try{
       await models.userModels.updateUserAttending(mutationData);
       await models.eventModels.updateEventAttendance(mutationData);
+      const events = await models.eventModels.getAllEvents();
       let responseMessage = {
         success: true,
         message: 'Successfully updated',
+        updatedList: events,
       }
       return responseMessage;
     } catch (error) {
@@ -82,9 +84,11 @@ module.exports = {
     try{
       await models.userModels.userLeftEvent(mutationData);
       await models.eventModels.userLeftEvent(mutationData);
+      const events = await models.eventModels.getAllEvents();
       let responseMessage = {
         success: true,
         message: 'Successfully updated',
+        updatedList: events,
       }
       return responseMessage;
     } catch (error) {
@@ -94,7 +98,7 @@ module.exports = {
   },
   deleteEvent: async (_, mutationData) => {
     try{
-      console.log('delete event')
+      console.log('************************** delete event **************************')
       await models.eventModels.deleteEvent(mutationData);
       await models.userModels.eventWasDeleted(mutationData);
       const events = await models.eventModels.getAllEvents();
