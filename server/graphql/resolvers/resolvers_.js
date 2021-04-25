@@ -2,7 +2,7 @@
 
 const models = require('../database/database-models/models');
 const {ApolloError}  = require('apollo-server-errors');
-1
+
 module.exports = {
   Query: {
     getUser: async(_, {_id}) => {
@@ -25,7 +25,7 @@ module.exports = {
         console.log(error);
         throw new ApolloError(error);
       }
-    }
+    },
   },
   Mutation: {
     addUser: async (_,  userData ) => {
@@ -65,8 +65,6 @@ module.exports = {
     }
   },
   userJoinedEvent: async (_, mutationData) => {
-    console.log('in server');
-    console.log(mutationData);
     try{
       await models.userModels.updateUserAttending(mutationData);
       await models.eventModels.updateEventAttendance(mutationData);
@@ -79,6 +77,39 @@ module.exports = {
       console.log(error);
       throw new ApolloError(error);
     }
-  }
-  }
+  },
+  userLeftEvent: async (_, mutationData) => {
+    try{
+      await models.userModels.userLeftEvent(mutationData);
+      await models.eventModels.userLeftEvent(mutationData);
+      let responseMessage = {
+        success: true,
+        message: 'Successfully updated',
+      }
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
+  },
+  deleteEvent: async (_, mutationData) => {
+    try{
+      console.log('delete event')
+      await models.eventModels.deleteEvent(mutationData);
+      await models.userModels.eventWasDeleted(mutationData);
+      const events = await models.eventModels.getAllEvents();
+      let responseMessage = {
+        success: true,
+        message: 'Successfully updated',
+        updatedList: events,
+      }
+      console.log('finished');
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
+  },
+
+  },
 }

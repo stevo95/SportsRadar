@@ -4,7 +4,10 @@ import {useMutation} from '@apollo/client';
 import Modal from 'react-native-modal';
 
 import ButtonGold from './button.gold.component ';
-import {USER_JOINED_EVENT} from '../GraphQL/mutationDeclarations';
+import {
+  USER_JOINED_EVENT,
+  USER_LEFT_EVENT,
+} from '../GraphQL/mutationDeclarations';
 
 function EventInfoModalPopup({
   visible,
@@ -12,14 +15,20 @@ function EventInfoModalPopup({
   eventData,
   navHandler,
   uid,
+  setEvents,
 }) {
-  const [userJoined, {hostingData}] = useMutation(USER_JOINED_EVENT);
+  const [userJoined, {joinedData}] = useMutation(USER_JOINED_EVENT);
+  const [userLeft, {leftData}] = useMutation(USER_LEFT_EVENT);
 
   function hideModal() {
     visibleSetter(false);
   }
 
-  function onPress() {
+  function updateEvents() {
+    // setEvents('new');
+  }
+
+  function openProfile() {
     navHandler(eventData.creator_id);
   }
 
@@ -29,22 +38,45 @@ function EventInfoModalPopup({
 
   async function joinHandler() {
     try {
-      console.log('clicked the join handler');
-      const updateUserHosting = await userJoined({
+      const updateUserAttending = await userJoined({
         variables: {
           userId: uid,
           eventId: eventData._id,
         },
       });
-      console.log(updateUserHosting);
+      console.log(updateUserAttending);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function cancelHandler() {
+    console.log('leave event');
+    try {
+      const leaveEvent = await userLeft({
+        variables: {
+          userId: uid,
+          eventId: eventData._id,
+        },
+      });
+      console.log(leaveEvent);
+      console.log('cancel event attendance');
     } catch (error) {
       console.log(error);
     }
   }
 
   function renderButton() {
-    return uid === eventData.creator_id ? (
-      <ButtonGold text="Delete" color="red" onClick={deleteHandler} />
+    if (uid === eventData.creator_id){
+      return <ButtonGold text="Delete" color="red" onClick={deleteHandler} />;
+    } else {
+      if (eventData.attendance !== undefined) return isAttending();
+    }
+  }
+
+  function isAttending() {
+    return eventData.attendance.includes(uid) ? (
+      <ButtonGold text="Cancel" onClick={cancelHandler} />
     ) : (
       <ButtonGold text="Join" onClick={joinHandler} />
     );
@@ -60,7 +92,7 @@ function EventInfoModalPopup({
       backdropTransitionOutTiming={1000}
       backdropOpacity={0.3}>
       <View style={styles.left}>
-        <TouchableOpacity style={styles.profileContainer} onPress={onPress}>
+        <TouchableOpacity style={styles.profileContainer} onPress={openProfile}>
           <Image source={require('../assets/user.png')} style={styles.image} />
         </TouchableOpacity>
       </View>

@@ -39,17 +39,49 @@ async function getAllEvents() {
 async function updateEventAttendance(mutationData) {
   try {
     const event = await db.events.findByPk(mutationData.eventId);
-    const toLoad = [...event.attendance, mutationData._id];
-    const attendance = await db.events.update({attendance: toLoad}, {
-      where: {
-        _id: mutationData.eventId
-      }
-    });
+    if (!event.attendance.includes(mutationData._id)) {
+      const toLoad = [...event.attendance, mutationData._id];
+      const attendance = await db.events.update({attendance: toLoad}, {
+        where: {
+          _id: mutationData.eventId
+        }
+      });
+    }
     return;
   } catch (error) {
     console.log(error);
     return error;
   }
+};
+
+async function userLeftEvent (mutationData) {
+  try {
+    const event = await db.events.findByPk(mutationData.eventId);
+    let attending = [...event.attendance];
+    const idx = attending.indexOf(mutationData._id);
+    if (idx !== -1) {
+      attending.splice(idx, 1);
+      const updatedHosting = await db.events.update({attendance: attending}, {
+        where: {
+          _id: mutationData.eventId
+        }
+      });
+    }
+    return;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}; 
+
+async function deleteEvent(mutationData) {
+  try{
+    const event = await db.events.findByPk(mutationData.eventId);
+    await event.destroy();
+  } catch(error) {
+    console.log(error);
+    return error;
+  }
 }
 
-module.exports = {addEvent, getAllEvents, updateEventAttendance}
+module.exports = {addEvent, getAllEvents, updateEventAttendance, userLeftEvent, deleteEvent}

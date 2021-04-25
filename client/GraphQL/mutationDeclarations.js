@@ -87,5 +87,27 @@ const USER_JOINED_EVENT = gql`
     }
   }
 `;
+const USER_LEFT_EVENT = gql`
+  mutation UserLeftEvent($userId: String!, $eventId: String!) {
+    userLeftEvent(_id: $userId, eventId: $eventId) {
+      success
+      message
+    }
+  }
+`;
+const DELETE_EVENT = gql`
+  mutation DeleteEvent($userId: String!, $eventId: String!) {
+    deleteEvent(_id: $userId, eventId: $eventId) {
+      success
+      message
+    }
+  }
+`;
 
-module.exports = {ADD_USER, ADD_EVENT, UPDATE_HOSTING, USER_JOINED_EVENT};
+module.exports = {
+  ADD_USER,
+  ADD_EVENT,
+  UPDATE_HOSTING,
+  USER_JOINED_EVENT,
+  USER_LEFT_EVENT,
+};

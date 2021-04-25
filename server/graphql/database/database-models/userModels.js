@@ -1,6 +1,8 @@
 'user-strict'
 
 const db = require('../db');
+const { Op } = require('sequelize');
+const helpers = require('./helpers');
 
 async function getUserById(id) {
   try{
@@ -36,16 +38,9 @@ async function addUser(userData) {
   }
 }
 
-async function updateUserHosting(userData) {
+async function updateUserHosting(mutationData) {
   try {
-    const user = await db.users.findByPk(userData._id);
-    const toLoad = [...user.events_hosting, userData.eventId];
-    const updatedHosting = await db.users.update({events_hosting: toLoad}, {
-      where: {
-        _id: userData._id
-      }
-    });
-    const updatedUser = await db.users.findByPk(userData._id);
+    const updatedUser = await helpers.updateSingleHosting(mutationData._id, mutationData.eventId,'add');
     return updatedUser.events_hosting;
   } catch (error) {
     console.log(error);
@@ -55,23 +50,26 @@ async function updateUserHosting(userData) {
 
 async function updateUserAttending(userData) {
   try {
-    const user = await db.users.findByPk(userData._id);
-    const toLoad = [...user.events_attending, userData.eventId];
-    const updatedHosting = await db.users.update({events_hosting: toLoad}, {
-      where: {
-        _id: userData._id
-      }
-    });
+    helpers.updateSingleAttending(userData._id, userData.eventId, 'join');
     return;
   } catch (error) {
     console.log(error);
     return error;
   }
-}
+};
 
-async function updateUserRating(_, {id}, {newRating}) {
+async function userLeftEvent(userData) {
   try {
-    const userRating = await db.user.update({rating: newRating}, {
+    helpers.updateSingleAttending(userData._id, userData.eventId, 'leave');
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+async function updateUserRating({id}, {newRating}) {
+  try {
+    const userRating = await db.users.update({rating: newRating}, {
       where: {
         _id: id
       }
@@ -80,11 +78,11 @@ async function updateUserRating(_, {id}, {newRating}) {
   } catch (error) {
     return error;
   }
-}
+};
 
-async function updateUserFriends(_, {id}, {newFriends}) {
+async function updateUserFriends({id}, {newFriends}) {
   try {
-    const userFriends = await db.user.update({friends: newFriends}, {
+    const userFriends = await db.users.update({friends: newFriends}, {
       where: {
         _id: id
       }
@@ -93,6 +91,38 @@ async function updateUserFriends(_, {id}, {newFriends}) {
   } catch (error) {
     return error;
   }
-}
+};
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending};
+async function eventWasDeleted(mutationData) {
+  try{
+    const updateHosting = await helpers.updateSingleHosting(mutationData._id, mutationData.eventId, 'delete');
+    const users = await db.users.findAll({where: {
+      events_attending: {
+        [Op.contains]: [mutationData.eventId]
+      }
+    }}
+    );
+    for (const user of users) {
+      const toLoad = [...user.events_attending];
+      const idx = toLoad.indexOf(mutationData.eventId);
+      toLoad.splice(idx, 1);
+      await db.users.update({events_attending: toLoad}, {
+        where: {
+          _id: user._id
+        }
+      });
+    }
+    return;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+// {where: {
+//   events_attending: {
+//     [Op.contains]: [mutationData.eventId]
+//   }
+// }}
+
+module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted};

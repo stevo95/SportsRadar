@@ -3,7 +3,7 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import { useMutation, useLazyQuery  } from '@apollo/client';
-import {View, StyleSheet, PermissionsAndroid, Dimensions, Text} from 'react-native';
+import {View, StyleSheet, PermissionsAndroid, Dimensions} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-spinkit';
@@ -54,8 +54,6 @@ function MapScreen({navigation}) {
   const [updateHosting, {hostingData}] = useMutation(UPDATE_HOSTING);
   const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_ALL_EVENTS);
 
-
-
   const requestGeolocationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -76,7 +74,6 @@ function MapScreen({navigation}) {
       console.warn(err);
     }
   };
-
   useEffect(() => {
     const geoOptions = {
       enableHighAccuracy: true,
@@ -86,7 +83,8 @@ function MapScreen({navigation}) {
     async function initializeData() {
       try {
         await loadEvents();
-        if (data !== undefined) {
+        if (data !== undefined ) {
+          console.log('setting data');
           setEvents(data.getAllEvents);
         }
         const authInfo = await AsyncStorage.getItem('authInfo');
@@ -146,9 +144,9 @@ function MapScreen({navigation}) {
         addEventCreatorUsername: markerData.username,
         addEventPrice: markerData.price,
       },
-      update: (cache, {resultData}) => {
+      update: (cache, {data}) => {
         try {
-          const toWrite = [...resultData.addEvent.updatedList];
+          const toWrite = [...data.addEvent.updatedList];
           setEvents(toWrite);
         } catch (error) {
           console.log('error');
@@ -156,15 +154,11 @@ function MapScreen({navigation}) {
         }
       },
     });
-    console.log('update user attending');
     const newEventId = addEventResult.data.addEvent.updatedList[addEventResult.data.addEvent.updatedList.length - 1]._id;
-    console.log(newEventId);
-    console.log(typeof newEventId);
     const updateUserHosting = await updateHosting({variables: {
       updateUserHostingId: authData.uid,
       updateUserHostingEventId: newEventId,
     }});
-    console.log(updateUserHosting);
       setCreateEventModalVisible(false);
     } catch (error) {
       console.log(error);
@@ -214,6 +208,7 @@ function MapScreen({navigation}) {
         eventData = {event}
         navHandler = {navHandler}
         uid= {authData.uid}
+        setEvents = {setEvents}
       />
     );
   }

@@ -23,16 +23,17 @@ const typeDefs = gql`
   }
   type Event {
     _id: ID!
-    description: String!
-    date: String!
-    time: String!
-    latitude: Float!
-    longitude: Float!
-    sport: String!
-    free: Boolean!
-    creator_id: String!
-    creator_username: String!
+    description: String
+    date: String
+    time: String
+    latitude: Float
+    longitude: Float
+    sport: String
+    free: Boolean
+    creator_id: String
+    creator_username: String
     price: String
+    attendance: [String]
     # comments: [Comment]!
     # title: String!
     # img_url: String!
@@ -95,15 +96,26 @@ const typeDefs = gql`
       events: [ID]!
     ): [String]
 
+    updateUserHosting(
+      _id: String
+      eventId: String
+    ): UpdateResponse
+
     userJoinedEvent(
       _id: String
       eventId: String
     ): UpdateResponse
 
-    updateUserHosting(
+    userLeftEvent(
       _id: String
       eventId: String
     ): UpdateResponse
+
+    deleteEvent(
+      _id: String
+      eventId: String
+    ): EventResponse
+
 
 
     #########################################
@@ -122,7 +134,7 @@ const typeDefs = gql`
       creator_username: String
       price: String
       # attending: [ID]
-    ): AddEventResponse
+    ): EventResponse
 
   }
 
@@ -130,10 +142,10 @@ const typeDefs = gql`
     ##########  RESPONSE TYPES  #############
     #########################################
 
-  type AddEventResponse {
+  type EventResponse {
     success: Boolean!
     message: String!
-    updatedList: [Event]
+    updatedList: [Event]!
   }
 
   type AddUserResponse {
@@ -146,5 +158,6 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
   }
+
 `
 module.exports = typeDefs;
