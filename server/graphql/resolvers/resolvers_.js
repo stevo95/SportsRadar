@@ -121,7 +121,6 @@ module.exports = {
   },
   addPost: async (_, mutationData) => {
     try {
-      console.log('_________________________ add post ____________________________');
       const posts = await models.userModels.addPost(mutationData);
       let responseMessage = {
         success: true,

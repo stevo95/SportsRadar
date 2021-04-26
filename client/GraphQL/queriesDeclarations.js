@@ -29,6 +29,7 @@ const GET_USER = gql`
       bio
       events_hosting
       events_attending
+      posts
     }
   }
 `;

@@ -1,95 +1,143 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Dimensions} from 'react-native';
 import { AirbnbRating } from 'react-native-elements';
 import { useLazyQuery  } from '@apollo/client';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
+import PostsDashboard from '../../components/posts.dashboard.component';
+import Spinner from 'react-native-spinkit';
 
 function ProfileScreen({ route, navigation }) {
-
-  const [loadEvents, {called , loadingError, data }] = useLazyQuery(GET_USER, {
+  console.log('route.params');
+  console.log(route.params);
+  const [loadUser, {called , loadingError, data }] = useLazyQuery(GET_USER, {
     variables: { getUserId: route.params.userId },
   });
 
-  const [username, setUsername] = useState('');
-  const [rating, setRating] = useState(0);
-  const [bio, setBio] = useState('');
+  const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
+  const [loadingStatus, setLoadingStatus] = useState(true);
 
 
   useEffect(() => {
 
     async function initializeData() {
       try {
-        await loadEvents();
-        setUsername(data.getUser.nickname);
-        setBio(data.getUser.bio);
-        if (route.params.rating !== null) setRating(data.getUser.rating);
+        if (data === undefined) await loadUser();
+        if (data !== undefined) setUserInfo(data.getUser);
       } catch (error) {
         console.log(error);
       }
     }
     initializeData();
-    console.log('user id:');
-    console.log(route.params.userId);
-  }, [data, route.params.rating, route.params.userId]);
+    if (userInfo.nickname !== 'Username' && data !== undefined) setLoadingStatus(false);
+  }, [data, userInfo]);
 
-  function userRated(value) {
-    console.log(value);
+  function onPress(value) {
+    if (value === 'Hosting') {
+      navigation.navigate('ProfileStack', {
+        screen: 'EventsList',
+        params: {
+          eventsIds: userInfo.events_hosting,
+          uid: userInfo._id,
+        },
+      });
+    } else if (value === 'Attending') {
+      navigation.navigate('ProfileStack', {
+        screen: 'EventsList',
+        params: {
+          eventsIds: userInfo.events_attending,
+          uid: userInfo._id,
+        },
+      });
+    }
   }
 
+
+  const hosting = `${userInfo.events_hosting.length}`;
+  const attending = `${userInfo.events_attending.length}`;
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
-        <TouchableOpacity style={styles.profilePictureContainer}>
-          <Image
-            style={styles.img}
-            source={{
-              uri: 'https://i.pinimg.com/originals/ee/85/64/ee8564ee5234e650aadf4c19b6d7c753.jpg',
-            }}
-          />
-        </TouchableOpacity>
-        <Text style={styles.username}>{username}</Text>
-      </View>
-      <View style={styles.card}>
-        <View style={styles.bio}>
-          <Text>{bio}</Text>
-        </View>
-      </View>
-      <View style={styles.card}>
-        <View style={styles.eventsInfo}>
-          <Text style = {styles.eventsText}>Hosting: 5 events</Text>
-          <Text style = {styles.eventsText}>|</Text>
-          <Text style = {styles.eventsText}>Attending: 2 events</Text>
-        </View>
-      </View>
+    <View style={styles.container}>
+      {
+        loadingStatus ?
+          <Spinner style={styles.spinStyle} type={'Circle'} color={'gold'}/>
+        :
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.profilePictureContainer}>
+              <Image
+                style={styles.img}
+                source={{
+                  uri: 'https://i.pinimg.com/originals/ee/85/64/ee8564ee5234e650aadf4c19b6d7c753.jpg',
+                }}
+              />
+            </TouchableOpacity>
+            <Text style={styles.username}>{userInfo.nickname}</Text>
+          </View>
+          <View style={styles.card}>
+            <View style={styles.bio}>
+              <Text>{userInfo.bio}</Text>
+            </View>
+            <TouchableOpacity style={styles.editButton}>
+              <Text style={styles.btnText}>Edit bio</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.card}>
+            <View style={styles.eventsInfo}>
+              <TouchableOpacity style={styles.eventCounter} onPress={()=>onPress('Hosting')}>
+                <Text style = {styles.eventsText}>Hosting: </Text>
+                <Text style = {styles.eventsText}>{hosting}</Text>
+              </TouchableOpacity>
+              <Text style = {styles.divider}>|</Text>
+              <TouchableOpacity style={styles.eventCounter} onPress={()=>onPress('Attending')}>
+                <Text style = {styles.eventsText}>Attending: </Text>
+                <Text style = {styles.eventsText}>{attending}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-      <View style={styles.card}>
-        <View style={styles.rating}>
-        <AirbnbRating
-          style={styles.ratingStars}
-          ratingCount={5}
-          defaultRating = {rating}
-          size={50}
-          onFinishRating={(userRating) => userRated(userRating)}
-          selectedColor = "gold"
-          unSelectedColor	= "silver"
-        />
-          {/* <Text style = {styles.eventsText}>Rating component here</Text> */}
-        </View>
-      </View>
+          <View style={styles.card}>
+            <View style={styles.rating}>
+            <AirbnbRating
+              style={styles.ratingStars}
+              ratingCount={5}
+              size={50}
+              showRating={false}
+              selectedColor = "gold"
+              unSelectedColor	= "whitesmoke"
+              defaultRating={userInfo.rating}
+            />
+            </View>
+          </View>
 
-      <View style={styles.posts}>
-          <ScrollView style={styles.contentWrapper}>
-            <Text style = {styles.eventsText}>Show all posts</Text>
-          </ScrollView>
-      </View>
-    </ScrollView>
+          <View style={styles.card}>
+            <View style={styles.content}>
+              <PostsDashboard
+                posts={userInfo.posts}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      }
+    </View>
   );
 }
 
+const {height} = Dimensions.get('screen');
+const height_loader = height * 0.25;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex:1,
+    backgroundColor: '#5ce1e6',
+    justifyContent: 'center',
+  },
+  spinStyle: {
+    width: height_loader,
+    height: height_loader,
+    alignSelf:'center',
+  },
+  scroll: {
     backgroundColor: '#5ce1e6',
     textAlign: 'center',
     alignItems: 'center',
@@ -97,9 +145,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? 25 : 0,
   },
   card: {
-    // alignSelf: 'stretch',
     width: '95%',
-    // backgroundColor: 'rgba(100,100,100,0.1)',
     marginBottom: '5%',
     alignItems: 'center',
     padding: 5,
@@ -108,61 +154,77 @@ const styles = StyleSheet.create({
     height: 250,
     width: 250,
     borderRadius: 125,
-    // backgroundColor: 'pink',
     justifyContent: 'center',
     alignItems: 'center',
   },
   bio: {
-    width: '90%',
-    // backgroundColor: 'pink',
+    width: '95%',
   },
   eventsInfo: {
     flexDirection: 'row',
     justifyContent:'space-between',
-    // backgroundColor: 'pink',
-    width: '90%',
+    width: '95%',
   },
   eventsText: {
-    color:'blue',
+    color:'black',
     fontWeight: 'bold',
     fontSize: 20,
   },
   rating: {
-    width: '90%',
-    // backgroundColor: 'pink',
+    width: '95%',
     padding: 5,
   },
-  inputWrapper: {
-    borderWidth: 1,
-    marginBottom: '5%',
+  content: {
+    alignSelf: 'stretch',
   },
-  contentWrapper: {
-    borderWidth: 1,
-    width: '90%',
-    backgroundColor: 'pink',
+  inputWrapper: {
+    marginBottom: '3%',
+    flexDirection: 'row',
+    height: 80,
+    justifyContent: 'space-around',
   },
   img: {
     height: 250,
     width: 250,
     resizeMode: 'cover',
-    backgroundColor: 'red',
+    backgroundColor: 'gold',
     borderRadius: 125,
   },
   username: {
     fontWeight: 'bold',
     fontSize: 20,
   },
-  ratingText: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    alignSelf: 'center',
+  eventCounter: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '49%',
   },
-  posts: {
-    flex: 1,
-    marginBottom: '5%',
-    alignSelf: 'stretch',
+  divider: {
+    color:'grey',
+    fontSize: 20,
+  },
+  editButton: {
+    width: '95%',
+    height: 30,
+    backgroundColor: 'whitesmoke',
+    borderRadius: 5,
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
+  postField: {
+    width: '90%',
+    height: '100%',
+    backgroundColor: 'rgba(100,100,100,0.1)',
+    borderRadius: 15,
+  },
+  goButton: {
+    width: '8%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

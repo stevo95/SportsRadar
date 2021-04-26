@@ -4,17 +4,19 @@ import { useFocusEffect } from '@react-navigation/native';
 import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, TextInput, Dimensions} from 'react-native';
 import { Icon } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
-import { useLazyQuery  } from '@apollo/client';
+import { useLazyQuery, useMutation  } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
+import {  ADD_POST } from '../../GraphQL/mutationDeclarations';
 import PostsDashboard from '../../components/posts.dashboard.component';
 import Spinner from 'react-native-spinkit';
 
 function ProfileScreen({navigation}) {
-  const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5});
+  const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
   const [userId, setUserId] = useState('1');
   const [post, setPost] = useState();
   const [loadingStatus, setLoadingStatus] = useState(true);
+  const [addPost] = useMutation(ADD_POST);
   const [loadUser, {  data, called, refetch }] = useLazyQuery(GET_USER, {
     variables: { getUserId: userId },
   });
@@ -23,7 +25,6 @@ function ProfileScreen({navigation}) {
     try {
       await loadUser();
       if (called) {
-        console.log('refetch data using refetch');
         await refetch();
       }
     } catch (err) {
@@ -48,7 +49,6 @@ function ProfileScreen({navigation}) {
   );
 
   useEffect(() => {
-    if (userInfo.nickname !== 'Username') setLoadingStatus(false);
     async function initScreen() {
       try {
         const authData = await AsyncStorage.getItem('authInfo');
@@ -60,6 +60,7 @@ function ProfileScreen({navigation}) {
       }
     }
     initScreen();
+    if (userInfo.nickname !== 'Username' && data !== undefined) setLoadingStatus(false);
   }, [data, userInfo]);
 
   function onTextInput(value) {
@@ -88,6 +89,20 @@ function ProfileScreen({navigation}) {
           uid: userId,
         },
       });
+    }
+  }
+  async function sendPost() {
+    try {
+      await addPost({
+        variables: {
+          userId: userId,
+          post: post,
+        },
+      });
+      await refetch();
+      setPost('');
+    } catch (err) {
+      console.log(err);
     }
   }
 
@@ -145,9 +160,7 @@ function ProfileScreen({navigation}) {
               unSelectedColor	= "whitesmoke"
               defaultRating={userInfo.rating}
               onFinishRating={(value) => rate(value)}
-              // ratingBackgroundColor='transparent'
             />
-              {/* <Text style = {styles.eventsText}>Rating component here</Text> */}
             </View>
           </View>
 
@@ -162,11 +175,16 @@ function ProfileScreen({navigation}) {
                   value = {post}
                   multiline={true}
                 />
-                <TouchableOpacity style={styles.goButton}>
+                <TouchableOpacity
+                  style={styles.goButton}
+                  onPress={sendPost}
+                >
                   <Icon name="ios-send"/>
                 </TouchableOpacity>
               </View>
-              <PostsDashboard/>
+              <PostsDashboard
+                posts={userInfo.posts}
+              />
             </View>
           </View>
         </ScrollView>

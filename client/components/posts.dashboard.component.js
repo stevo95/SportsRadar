@@ -1,147 +1,42 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, ScrollView, View} from 'react-native';
 
-function PostsDashboard({onClick, text}) {
+function PostsDashboard({posts}) {
+  const [content, setContent] = useState([]);
+
+  useEffect(() => {
+    const reversed = [...posts];
+    reversed.reverse();
+    setContent(reversed);
+  }, [posts]);
+
+  function renderPosts() {
+    const postList = content.map((post, idx) => {
+      return (
+        <View key={idx} style={styles.post}>
+          <View style={styles.post_container}>
+            <Text>{post}</Text>
+          </View>
+          <View style={styles.post_container_options}>
+            <Text>Delete</Text>
+            <Text>Comments</Text>
+            <Text>Likes</Text>
+          </View>
+        </View>
+      );
+    });
+    return postList;
+  }
+
   return (
     <View style={styles.wrapper}>
       <ScrollView style={styles.container} nestedScrollEnabled>
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
-        {/* *********************** start *********************** */}
-        <View style={styles.post}>
-          <View style={styles.post_container}>
-            <Text>
-              Thi is a text of a user post. Bla bla bla bla bla fkas lksaf knaflkn
-              alfn la sadn akjs
-            </Text>
-          </View>
-          <View style={styles.post_container_options}>
-            <Text>Delete</Text>
-            <Text>Comments</Text>
-            <Text>Likes</Text>
-          </View>
-        </View>
-        {/* *********************** end *********************** */}
+        {renderPosts()}
       </ScrollView>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   wrapper: {
     height: 500,
@@ -152,6 +47,7 @@ const styles = StyleSheet.create({
   },
   post: {
     backgroundColor: 'rgba(100,100,100,0.1)',
+    height: 80,
     borderRadius: 15,
     padding: 5,
     marginTop: 5,
@@ -160,10 +56,11 @@ const styles = StyleSheet.create({
   post_container: {
     borderBottomColor: '#f2f2f2',
     borderBottomWidth: 1,
+    height: '70%',
   },
   post_container_options: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
   },
 });
 

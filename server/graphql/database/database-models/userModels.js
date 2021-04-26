@@ -159,8 +159,16 @@ async function eventWasDeleted(mutationData) {
 
 async function addPost(mutationData) {
   try {
-    // do shit
-  } catch (err) {
+    await db.users.sync({ alter: true });
+    const user = await db.users.findByPk(mutationData._id);
+    const newPosts = [...user.posts, mutationData.post];
+    await db.users.update({posts: newPosts}, {
+      where: {
+        _id: mutationData._id
+      }
+    });
+    return newPosts;
+  } catch (error) {
     return error;
   }
 }

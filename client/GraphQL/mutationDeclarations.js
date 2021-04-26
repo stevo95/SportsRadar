@@ -148,6 +148,16 @@ const REMOVE_EVENT = gql`
   }
 `;
 
+const ADD_POST = gql`
+  mutation AddPost($userId: String!, $post: String!) {
+    addPost(_id: $userId, post: $post) {
+      success
+      message
+      updatedList
+    }
+  }
+`;
+
 module.exports = {
   ADD_USER,
   ADD_EVENT,
@@ -155,4 +165,5 @@ module.exports = {
   USER_JOINED_EVENT,
   USER_LEFT_EVENT,
   REMOVE_EVENT,
+  ADD_POST,
 };
