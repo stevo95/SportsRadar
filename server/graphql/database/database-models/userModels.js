@@ -5,6 +5,7 @@ const { Op } = require('sequelize');
 const helpers = require('./helpers');
 
 async function getUserById(id) {
+  console.log('getuser');
   try{
     const user = await db.users.findAll({
       where: {
@@ -57,8 +58,6 @@ async function addUser(userData) {
 
 async function logIn(userData) {
   try {
-    console.log('**************************************************** login *************************************************');
-    console.log(userData);
     const user = await db.users.findOne({ where: { email: userData.email } });
     if (user === null) {
       return {

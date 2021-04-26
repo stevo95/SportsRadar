@@ -8,30 +8,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
 
 function ProfileScreen() {
-  const [userId, setUserId] = useState('0');
+  const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: ''});
+  const [userId, setUserId] = useState('1');
 
-  const [loadUser, {data, refetch }] = useLazyQuery(GET_USER, {
+  const [loadUser, {loading , data }] = useLazyQuery(GET_USER, {
     variables: { getUserId: userId },
   });
-
 
   useEffect(() => {
     async function initData() {
       try {
         const authData = await AsyncStorage.getItem('authInfo');
         const parsedData = authData !== null ? JSON.parse(authData) : null;
-        console.log('in profile screen');
-        console.log(parsedData.uid);
-        console.log(parsedData.username);
         await setUserId(parsedData.uid);
         await loadUser();
-        console.log(data);
+        if (data) setUserInfo(data.getUser);
       } catch (e) {
         console.log(e);
       }
     }
     initData();
   }, [data]);
+
+  const hosting = `${userInfo.events_hosting.length}`;
+  const attending = `${userInfo.events_attending.length}`;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -44,18 +44,27 @@ function ProfileScreen() {
             }}
           />
         </TouchableOpacity>
-        <Text style={styles.username}>User name</Text>
+        <Text style={styles.username}>{userInfo.nickname}</Text>
       </View>
       <View style={styles.card}>
         <View style={styles.bio}>
-          <Text>userData</Text>
+          <Text>{userInfo.bio}</Text>
         </View>
+        <TouchableOpacity style={styles.editButton}>
+          <Text style={styles.btnText}>Edit profile</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.card}>
         <View style={styles.eventsInfo}>
-          <Text style = {styles.eventsText}>Hosting: 5 events</Text>
-          <Text style = {styles.eventsText}>|</Text>
-          <Text style = {styles.eventsText}>Attending: 2 events</Text>
+          <TouchableOpacity style={styles.eventCounter}>
+            <Text style = {styles.eventsText}>Hosting: </Text>
+            <Text style = {styles.eventsText}>{hosting}</Text>
+          </TouchableOpacity>
+          <Text style = {styles.divider}>|</Text>
+          <TouchableOpacity style={styles.eventCounter}>
+            <Text style = {styles.eventsText}>Attending: </Text>
+            <Text style = {styles.eventsText}>{attending}</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -66,8 +75,8 @@ function ProfileScreen() {
           ratingCount={5}
           size={50}
           showRating={false}
-          selectedColor = 'gold'
-          unSelectedColor	= 'silver'
+          selectedColor = "gold"
+          unSelectedColor	= "whitesmoke"
           // ratingBackgroundColor='transparent'
           // onFinishRating={ratingCompleted}
         />
@@ -115,22 +124,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bio: {
-    width: '90%',
+    width: '95%',
     // backgroundColor: 'pink',
   },
   eventsInfo: {
     flexDirection: 'row',
     justifyContent:'space-between',
     // backgroundColor: 'pink',
-    width: '90%',
+    width: '95%',
   },
   eventsText: {
-    color:'blue',
+    color:'black',
     fontWeight: 'bold',
     fontSize: 20,
   },
   rating: {
-    width: '90%',
+    width: '95%',
     // backgroundColor: 'pink',
     padding: 5,
   },
@@ -154,7 +163,28 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: 'bold',
     fontSize: 20,
-  }
+  },
+  eventCounter: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '49%',
+  },
+  divider: {
+    color:'grey',
+    fontSize: 20,
+  },
+  editButton: {
+    width: '95%',
+    height: 30,
+    backgroundColor: 'whitesmoke',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  btnText: {
+    color: 'black',
+    fontWeight: 'bold',
+  },
 });
 
 export default ProfileScreen;

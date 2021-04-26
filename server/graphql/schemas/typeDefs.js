@@ -17,8 +17,8 @@ const typeDefs = gql`
     rating: Float
     bio: String
     friends: [User]
-    events_attending: [Event]
-    events_hosting: [Event]
+    events_attending: [String]
+    events_hosting: [String]
     posts: [Post]
   }
   type Event {

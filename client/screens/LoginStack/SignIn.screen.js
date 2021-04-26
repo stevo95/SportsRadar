@@ -9,7 +9,6 @@ import ButtonLarge from '../../components/button.large.component';
 import { USER_SIGN_IN } from '../../GraphQL/queriesDeclarations';
 
 function SignInScreen({navigation}) {
-  const [me, setMe] = useState();
   const [userData, setUserData] = useState({email: '', password: ''});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,8 +17,6 @@ function SignInScreen({navigation}) {
   useEffect(() => {
     async function authorize() {
       try {
-        console.log('authorizing');
-        console.log(data);
         if (data) {
           if (data.logIn.success) signIn();
         }
@@ -59,7 +56,7 @@ function SignInScreen({navigation}) {
         logInPassword: userData.password,
       }});
     } catch (err) {
-        console.log(error);
+        console.log(err);
     }
   }
 
@@ -68,7 +65,7 @@ function SignInScreen({navigation}) {
       const jsonValue = await JSON.stringify({uid: data.logIn.user._id, username: data.logIn.user.nickname});
       await AsyncStorage.setItem('authInfo', jsonValue);
     } catch (err) {
-      console.log(error);
+      console.log(err);
     }
   }
 

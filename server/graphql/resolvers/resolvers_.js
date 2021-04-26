@@ -6,6 +6,7 @@ const {ApolloError}  = require('apollo-server-errors');
 module.exports = {
   Query: {
     getUser: async(_, {_id}) => {
+      console.log(_id);
       try {
         const user = await models.userModels.getUserById(_id);
         return user[0];

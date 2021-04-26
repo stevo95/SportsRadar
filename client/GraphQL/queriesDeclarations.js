@@ -28,6 +28,8 @@ const GET_USER = gql`
       img_url
       rating
       bio
+      events_hosting
+      events_attending
     }
   }
 `;
