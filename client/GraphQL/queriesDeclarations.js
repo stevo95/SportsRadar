@@ -24,7 +24,6 @@ const GET_USER = gql`
       _id
       nickname
       email
-      password
       img_url
       rating
       bio

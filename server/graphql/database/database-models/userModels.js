@@ -5,7 +5,6 @@ const { Op } = require('sequelize');
 const helpers = require('./helpers');
 
 async function getUserById(id) {
-  console.log('getuser');
   try{
     const user = await db.users.findAll({
       where: {
@@ -44,7 +43,9 @@ async function addUser(userData) {
       friends: [],
       events_attending: [],
       events_hosting: [],
-      posts: []
+      posts: [],
+      rating: 0.1,
+      num_of_ratings: 0,
     });
     return {
       success: true,
@@ -156,10 +157,12 @@ async function eventWasDeleted(mutationData) {
   }
 };
 
-// {where: {
-//   events_attending: {
-//     [Op.contains]: [mutationData.eventId]
-//   }
-// }}
+async function addPost(mutationData) {
+  try {
+    // do shit
+  } catch (err) {
+    return error;
+  }
+}
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn};
+module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn, addPost};

@@ -93,14 +93,15 @@ function EventInfoModalPopup({
 
   function renderButton() {
     if (uid === eventData.creator_id){
-      return <ButtonGold text="Delete" color="red" onClick={deleteHandler} />;
+      return (
+        <ButtonGold text="Delete" color="#990000" onClick={deleteHandler} />
+      );
     } else {
       if (eventData.attendance !== undefined) return isAttending();
     }
   }
 
   function isAttending() {
-    // return eventData.attendance.includes(uid) ? (
     return joined ? (
       <ButtonGold text="Cancel" onClick={cancelHandler} />
     ) : (

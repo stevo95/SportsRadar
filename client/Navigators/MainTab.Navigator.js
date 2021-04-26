@@ -33,6 +33,7 @@ function MainTabScreen({authInfo}) {
     <MainTab.Navigator
       tabBarOptions={{
         showLabel:false,
+        keyboardHidesTabBar: true,
         style: {
           // position: 'absolute',
           // bottom: 25,

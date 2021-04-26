@@ -119,6 +119,21 @@ module.exports = {
       throw new ApolloError(error);
     }
   },
+  addPost: async (_, mutationData) => {
+    try {
+      console.log('_________________________ add post ____________________________');
+      const posts = await models.userModels.addPost(mutationData);
+      let responseMessage = {
+        success: true,
+        message: 'Post added to database',
+        updatedList: posts,
+      }
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
+  }
 
   },
 }

@@ -26,16 +26,16 @@ function ContentCard({objKey, onChange}) {
                 selectedValue={'Badminton'}
               >
                 <Picker.Item label="Badminton" value="Badminton" />
-                <Picker.Item label="Boxing" value="Boxing" />
+                <Picker.Item label="Baseball" value="Baseball" />
                 <Picker.Item label="Basketball" value="Basketball" />
-                <Picker.Item label="Fishing" value="Fishing" />
+                <Picker.Item label="Billiard" value="Billiard" />
+                <Picker.Item label="Bowling" value="Bowling" />
                 <Picker.Item label="Football" value="Football" />
-                <Picker.Item label="Gaming" value="Gaming" />
-                <Picker.Item label="Hiking" value="Hiking" />
-                <Picker.Item label="Table tennis" value="Table tennis" />
-                <Picker.Item label="Running" value="Running" />
-                <Picker.Item label="Sailing" value="Sailing" />
-                <Picker.Item label="Swimming" value="Swimming" />
+                <Picker.Item label="Golf" value="Golf" />
+                <Picker.Item label="PingPong" value="PingPong" />
+                <Picker.Item label="Rugby" value="Rugby" />
+                <Picker.Item label="Tennis" value="Tennis" />
+                <Picker.Item label="Volleyball" value="Volleyball" />
                 <Picker.Item label="Weightlifting" value="Weightlifting" />
               </Picker>
           </Body>

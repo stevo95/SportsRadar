@@ -15,11 +15,12 @@ const typeDefs = gql`
     password: String!
     img_url: String
     rating: Float
+    num_of_ratings: Int
     bio: String
     friends: [User]
     events_attending: [String]
     events_hosting: [String]
-    posts: [Post]
+    posts: [String]
   }
   type Event {
     _id: ID!
@@ -116,6 +117,11 @@ const typeDefs = gql`
       eventId: String
     ): EventResponse
 
+    addPost(
+      _id: String
+      post: String
+    ): PostResponse
+
 
 
     #########################################
@@ -146,6 +152,12 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     updatedList: [Event]!
+  }
+
+  type PostResponse {
+    success: Boolean!
+    message: String!
+    updatedList: [String]!
   }
 
   type AddEventResponse {

@@ -8,11 +8,12 @@ module.exports = (sequelize, DataTypes) => {
     password: {type: DataTypes.STRING, allowNull: false},
     img_url: {type: DataTypes.STRING, allowNull: true},
     bio: {type: DataTypes.STRING, allowNull: false},
-    rating: {type: DataTypes.REAL, allowNull: true},
+    rating: {type: DataTypes.REAL, allowNull: false},
+    num_of_ratings: {type: DataTypes.BIGINT, allowNull: false},
     friends: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
     events_attending: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: false},
     events_hosting: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: false},
-    posts: {type: DataTypes.ARRAY(DataTypes.BIGINT), allowNull: true},
+    posts: {type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true},
   },{
     timestamps: false,
   });
