@@ -173,4 +173,22 @@ async function addPost(mutationData) {
   }
 }
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn, addPost};
+async function changeBio(mutationData) {
+  try {
+    console.log('********************************************************** changing **********************************************************');
+    const user = await db.users.findByPk(mutationData._id);
+    console.log(user.nickname)
+    console.log(mutationData);
+    const newBio = mutationData.bio;
+    await db.users.update({bio: mutationData.bio}, {
+      where: {
+        _id: mutationData._id
+      }
+    });
+    return newPosts;
+  } catch (error) {
+    return error;
+  }
+}
+
+module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn, addPost, changeBio};

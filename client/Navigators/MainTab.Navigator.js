@@ -51,12 +51,11 @@ function MainTabScreen({authInfo}) {
             <View style={styles.iconContainer}>
               <Icon
                 type="FontAwesome"
-                name= "map"
+                name= "map-marker"
                 style={{
                   color: focused ? 'black' : 'grey',
                 }}
               />
-              <Text style={{color: focused ? 'black' : 'grey'}}>MAIN</Text>
             </View>
           ),
         }}
@@ -64,7 +63,6 @@ function MainTabScreen({authInfo}) {
 
       <MainTab.Screen name="Map" component={MapScreen}
         options={{
-          // headerShown: false,
           tabBarIcon: ({focused}) => (
             <View style={styles.iconContainer}>
               <Icon
@@ -73,7 +71,6 @@ function MainTabScreen({authInfo}) {
                 style={{
                   color: focused ? 'black' : 'grey'}}
               />
-              {/* <Text style={{color: focused ? '#5ce1e6' : 'grey', fontWeight: 'bold'}}>MAP</Text> */}
             </View>
           ),
           tabBarButton: (props) => (
@@ -95,7 +92,6 @@ function MainTabScreen({authInfo}) {
                   color: focused ? 'black' : 'grey',
                 }}
               />
-              <Text style={{color: focused ? 'black' : 'black'}}>PROFILE</Text>
             </View>
           ),
         }}

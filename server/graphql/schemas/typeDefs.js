@@ -122,6 +122,11 @@ const typeDefs = gql`
       post: String
     ): PostResponse
 
+    changeBio(
+      _id: String
+      bio: String
+    ): BioChangeResponse
+
 
 
     #########################################
@@ -176,6 +181,11 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
     updatedList: [Event]
+  }
+
+  type BioChangeResponse {
+    success: Boolean!
+    message: String!
   }
 
 `

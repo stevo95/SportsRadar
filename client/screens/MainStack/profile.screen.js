@@ -10,10 +10,12 @@ import {  GET_USER } from '../../GraphQL/queriesDeclarations';
 import {  ADD_POST } from '../../GraphQL/mutationDeclarations';
 import PostsDashboard from '../../components/posts.dashboard.component';
 import Spinner from 'react-native-spinkit';
+import ModalPopup from '../../components/edit.bio.modal.component';
 
 function ProfileScreen({navigation}) {
   const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
   const [userId, setUserId] = useState('1');
+  const [modalVisible, setModalVisible] = useState(false);
   const [post, setPost] = useState();
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [addPost] = useMutation(ADD_POST);
@@ -106,6 +108,10 @@ function ProfileScreen({navigation}) {
     }
   }
 
+  function editBio() {
+    setModalVisible(true);
+  }
+
   const hosting = `${userInfo.events_hosting.length}`;
   const attending = `${userInfo.events_attending.length}`;
 
@@ -116,6 +122,13 @@ function ProfileScreen({navigation}) {
           <Spinner style={styles.spinStyle} type={'Circle'} color={'gold'}/>
         :
         <ScrollView contentContainerStyle={styles.scroll}>
+          <ModalPopup
+            visible={modalVisible}
+            visibleSetter = {setModalVisible}
+            value={userInfo.bio}
+            uid={userId}
+            refetchUser={refetch}
+          />
           <View style={styles.card}>
             <TouchableOpacity style={styles.profilePictureContainer}>
               <Image
@@ -131,8 +144,11 @@ function ProfileScreen({navigation}) {
             <View style={styles.bio}>
               <Text>{userInfo.bio}</Text>
             </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.btnText}>Edit bio</Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={editBio}
+            >
+              <Text style={styles.btnText}>Edit Bio</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.card}>
@@ -229,6 +245,7 @@ const styles = StyleSheet.create({
   },
   bio: {
     width: '95%',
+    marginBottom: 20,
   },
   eventsInfo: {
     flexDirection: 'row',

@@ -157,6 +157,14 @@ const ADD_POST = gql`
     }
   }
 `;
+const CHANGE_BIO = gql`
+  mutation ChangeBio($userId: String!, $bio: String!) {
+    changeBio(_id: $userId, bio: $bio) {
+      success
+      message
+    }
+  }
+`;
 
 module.exports = {
   ADD_USER,
@@ -166,4 +174,5 @@ module.exports = {
   USER_LEFT_EVENT,
   REMOVE_EVENT,
   ADD_POST,
+  CHANGE_BIO,
 };

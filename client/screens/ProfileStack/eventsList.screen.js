@@ -37,7 +37,10 @@ function EventsList({ route, navigation }) {
         await loadEvents();
         console.log(data);
         if (data !== undefined) {
-          const filteredData = data.getAllEvents.filter(event => eventsIds.includes(event._id));
+          let filteredData = data.getAllEvents.filter(event => eventsIds.includes(event._id));
+          filteredData.sort(function (a,b) {
+            return (a.sport < b.sport) ? -1 : (a.sport > b.sport) ? 1 : 0;
+          });
           setEvents(filteredData);
           setLoadingScreen(false);
         }
@@ -109,7 +112,6 @@ function EventsList({ route, navigation }) {
 
   function renderEvents() {
     if (!loadingScreen && events !== undefined) {
-
       const eventsList = events.map((event, idx) => {
         const sport = event.sport;
         return (

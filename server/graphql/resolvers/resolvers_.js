@@ -132,6 +132,20 @@ module.exports = {
       console.log(error);
       throw new ApolloError(error);
     }
+  },
+
+  changeBio: async (_, mutationData) => {
+    try {
+      await models.userModels.changeBio(mutationData);
+      let responseMessage = {
+        success: true,
+        message: 'Bio changed',
+      }
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+      throw new ApolloError(error);
+    }
   }
 
   },

@@ -6,16 +6,17 @@ import { useLazyQuery  } from '@apollo/client';
 import {  GET_USER } from '../../GraphQL/queriesDeclarations';
 import PostsDashboard from '../../components/posts.dashboard.component';
 import Spinner from 'react-native-spinkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function ProfileScreen({ route, navigation }) {
-  console.log('route.params');
-  console.log(route.params);
-  const [loadUser, {called , loadingError, data }] = useLazyQuery(GET_USER, {
+  const [loadUser, {data }] = useLazyQuery(GET_USER, {
     variables: { getUserId: route.params.userId },
   });
 
   const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
   const [loadingStatus, setLoadingStatus] = useState(true);
+  const [userId, setUserId] = useState();
+  console.log(userId);
 
 
   useEffect(() => {
@@ -24,6 +25,11 @@ function ProfileScreen({ route, navigation }) {
       try {
         if (data === undefined) await loadUser();
         if (data !== undefined) setUserInfo(data.getUser);
+        if (userId === undefined) {
+          const authData = await AsyncStorage.getItem('authInfo');
+          const parsedData = authData !== null ? JSON.parse(authData) : null;
+          await setUserId(parsedData.uid);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -38,7 +44,7 @@ function ProfileScreen({ route, navigation }) {
         screen: 'EventsList',
         params: {
           eventsIds: userInfo.events_hosting,
-          uid: userInfo._id,
+          uid: userId,
         },
       });
     } else if (value === 'Attending') {
@@ -46,7 +52,7 @@ function ProfileScreen({ route, navigation }) {
         screen: 'EventsList',
         params: {
           eventsIds: userInfo.events_attending,
-          uid: userInfo._id,
+          uid: userId,
         },
       });
     }
@@ -78,9 +84,6 @@ function ProfileScreen({ route, navigation }) {
             <View style={styles.bio}>
               <Text>{userInfo.bio}</Text>
             </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.btnText}>Edit bio</Text>
-            </TouchableOpacity>
           </View>
           <View style={styles.card}>
             <View style={styles.eventsInfo}>
