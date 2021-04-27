@@ -17,6 +17,19 @@ async function getUserById(id) {
   }
 }
 
+async function getUserList(idsArray) {
+  try{
+    const result = [];
+    for (id of idsArray) {
+      const user = await db.users.findByPk(id);
+      if (user) result.push(user);
+    }
+    return result;
+  } catch (error) {
+    return error;
+  }
+}
+
 async function addUser(userData) {
   try {
     await db.users.sync();
@@ -39,13 +52,14 @@ async function addUser(userData) {
       nickname: userData.nickname,
       email: userData.email,
       password: userData.password,
-      bio: '',
+      bio: 'GO HARD !!!',
       friends: [],
       events_attending: [],
       events_hosting: [],
       posts: [],
-      rating: 0.1,
+      rating: 1,
       num_of_ratings: 0,
+      img_url: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
     });
     return {
       success: true,
@@ -175,10 +189,7 @@ async function addPost(mutationData) {
 
 async function changeBio(mutationData) {
   try {
-    console.log('********************************************************** changing **********************************************************');
     const user = await db.users.findByPk(mutationData._id);
-    console.log(user.nickname)
-    console.log(mutationData);
     const newBio = mutationData.bio;
     await db.users.update({bio: mutationData.bio}, {
       where: {
@@ -191,4 +202,17 @@ async function changeBio(mutationData) {
   }
 }
 
-module.exports = {getUserById, addUser, updateUserRating, updateUserFriends, updateUserHosting, updateUserAttending, userLeftEvent, eventWasDeleted, logIn, addPost, changeBio};
+module.exports = {
+  getUserById, 
+  addUser, 
+  updateUserRating, 
+  updateUserFriends, 
+  updateUserHosting, 
+  updateUserAttending, 
+  userLeftEvent, 
+  eventWasDeleted, 
+  logIn, 
+  addPost, 
+  changeBio,
+  getUserList
+};

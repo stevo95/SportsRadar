@@ -27,6 +27,7 @@ function EditBioModal({visible, visibleSetter, value, uid, refetchUser}) {
         },
       });
       await refetchUser();
+      visibleSetter(false);
     } catch (err) {
       console.log(err);
     }

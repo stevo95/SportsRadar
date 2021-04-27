@@ -1,8 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, TextInput, Dimensions} from 'react-native';
-import { Icon } from 'native-base';
+import { Icon, Fab, Button } from 'native-base';
 import { AirbnbRating } from 'react-native-ratings';
 import { useLazyQuery, useMutation  } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,6 +16,7 @@ import ModalPopup from '../../components/edit.bio.modal.component';
 function ProfileScreen({navigation}) {
   const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
   const [userId, setUserId] = useState('1');
+  const [fabActive, setfabActive] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [post, setPost] = useState();
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -112,6 +114,11 @@ function ProfileScreen({navigation}) {
     setModalVisible(true);
   }
 
+  async function logOut() {
+    await AsyncStorage.setItem('authInfo', '');
+    navigation.navigate('SplashScreen');
+  }
+
   const hosting = `${userInfo.events_hosting.length}`;
   const attending = `${userInfo.events_attending.length}`;
 
@@ -122,6 +129,27 @@ function ProfileScreen({navigation}) {
           <Spinner style={styles.spinStyle} type={'Circle'} color={'gold'}/>
         :
         <ScrollView contentContainerStyle={styles.scroll}>
+          <Fab
+            active={fabActive}
+            direction="down"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#5067FF' }}
+            position="topRight"
+            onPress={() => setfabActive(!fabActive)}>
+            <Icon name="share" />
+            <Button style={{ backgroundColor: '#DD5144' }} onPress={() => logOut()}>
+              <Icon type="FontAwesome" name="power-off" />
+            </Button>
+            {/* <Button style={{ backgroundColor: '#34A34F' }}>
+              <Icon name="logo-whatsapp" />
+            </Button> */}
+            {/* <Button style={{ backgroundColor: '#3B5998' }}>
+              <Icon name="logo-facebook" />
+            </Button>
+            <Button disabled style={{ backgroundColor: '#DD5144' }}>
+              <Icon name="mail" />
+            </Button> */}
+          </Fab>
           <ModalPopup
             visible={modalVisible}
             visibleSetter = {setModalVisible}
@@ -134,7 +162,7 @@ function ProfileScreen({navigation}) {
               <Image
                 style={styles.img}
                 source={{
-                  uri: 'https://i.pinimg.com/originals/ee/85/64/ee8564ee5234e650aadf4c19b6d7c753.jpg',
+                  uri: userInfo.img_url,
                 }}
               />
             </TouchableOpacity>
@@ -274,7 +302,7 @@ const styles = StyleSheet.create({
     height: 250,
     width: 250,
     resizeMode: 'cover',
-    backgroundColor: 'gold',
+    backgroundColor: 'whitesmoke',
     borderRadius: 125,
   },
   username: {

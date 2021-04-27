@@ -182,6 +182,15 @@ function MapScreen({navigation}) {
     });
   }
 
+  function navAttending(eventData) {
+    navigation.navigate('ProfileStack', {
+      screen: 'UsersList',
+      params: {
+        eventData: eventData,
+      },
+    });
+  }
+
   function renderEvents() {
     if (!loading && events !== undefined) {
       const eventsList = events.map((marker, idx) => {
@@ -213,6 +222,7 @@ function MapScreen({navigation}) {
           uid= {authData.uid}
           setEvents = {setEvents}
           refetchEvents = {refetch}
+          navAttendingHandler={navAttending}
         />
       );
     }

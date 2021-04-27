@@ -34,6 +34,17 @@ const GET_USER = gql`
   }
 `;
 
+const GET_USER_LIST = gql`
+  query GetUserList($getUserListIds: [ID]!) {
+    getUserList(_ids: $getUserListIds) {
+      _id
+      nickname
+      img_url
+      rating
+    }
+  }
+`;
+
 const USER_SIGN_IN = gql`
   query Query($logInEmail: String!, $logInPassword: String!) {
     logIn(email: $logInEmail, password: $logInPassword) {
@@ -47,4 +58,4 @@ const USER_SIGN_IN = gql`
   }
 `;
 
-module.exports = {GET_ALL_EVENTS, GET_USER, USER_SIGN_IN};
+module.exports = {GET_ALL_EVENTS, GET_USER, USER_SIGN_IN, GET_USER_LIST};

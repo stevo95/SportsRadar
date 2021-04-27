@@ -16,6 +16,7 @@ function EventInfoModalPopup({
   visibleSetter,
   eventData,
   navHandler,
+  navAttendingHandler,
   uid,
   refetchEvents,
 }) {
@@ -46,6 +47,10 @@ function EventInfoModalPopup({
 
   function openProfile() {
     navHandler(eventData.creator_id);
+  }
+
+  function attendingPress() {
+    navAttendingHandler(eventData);
   }
 
   async function deleteHandler() {
@@ -123,6 +128,7 @@ function EventInfoModalPopup({
     );
   }
 
+
   return (
     <Modal
       isVisible={visible}
@@ -151,7 +157,7 @@ function EventInfoModalPopup({
         <Text style={styles.text}>{eventData.date}</Text>
         <Text style={styles.text}>{eventData.time}</Text>
         <Text style={styles.text}>{eventData.description}</Text>
-        <TouchableOpacity style={styles.attendance}>
+        <TouchableOpacity style={styles.attendance} onPress={attendingPress}>
           <Text style={styles.textAttending}>Attending: </Text>
           <Text style={styles.textAttending}>{attending}</Text>
         </TouchableOpacity>

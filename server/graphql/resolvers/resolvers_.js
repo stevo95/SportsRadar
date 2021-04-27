@@ -14,11 +14,11 @@ module.exports = {
         return error;
       }
     },
-    getUserList: async(_, {idsArray}) => {
-      console.log(_id);
+    getUserList: async(_, idsArray) => {
       try {
-        const user = await models.userModels.getUserById(_id);
-        return user[0];
+        const users = await models.userModels.getUserList(idsArray._ids);
+        console.log(users);
+        return users;
       } catch (error) {
         console.log(error);
         return error;

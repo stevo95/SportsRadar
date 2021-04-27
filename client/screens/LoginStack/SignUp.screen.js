@@ -75,7 +75,7 @@ function SignUpScreen({navigation}) {
           iconName="user"
           onTextInput = {usernameInput}
           inputValue = {username}
-          featherIconName="check-circle"
+          // featherIconName="check-circle"
           // x-circle
           featherColor="green"
         />
@@ -85,7 +85,7 @@ function SignUpScreen({navigation}) {
           iconName="envelope"
           onTextInput = {emailInput}
           inputValue = {email}
-          featherIconName="check-circle"
+          // featherIconName="check-circle"
           // x-circle
           featherColor="green"
         />
@@ -95,7 +95,7 @@ function SignUpScreen({navigation}) {
           iconName="lock"
           onTextInput = {passwordInput}
           inputValue = {password}
-          featherIconName="eye-off"
+          // featherIconName="eye-off"
           // "eye"
           featherColor="grey"
         />

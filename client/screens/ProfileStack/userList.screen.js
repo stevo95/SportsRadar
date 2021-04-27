@@ -1,142 +1,79 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, ScrollView, Dimensions} from 'react-native';
-import { useMutation, useLazyQuery  } from '@apollo/client';
-import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
-import {  REMOVE_EVENT, USER_LEFT_EVENT, USER_JOINED_EVENT } from '../../GraphQL/mutationDeclarations';
+import {View, Text, StyleSheet, Image, ScrollView, Dimensions, ImageBackground} from 'react-native';
+import { useLazyQuery  } from '@apollo/client';
+import {  GET_USER_LIST } from '../../GraphQL/queriesDeclarations';
 import Spinner from 'react-native-spinkit';
-import ButtonGold from '../../components/button.gold.component ';
+import { AirbnbRating } from 'react-native-ratings';
 
-function EventsList({ route, navigation }) {
+function UsersList({ route, navigation }) {
 
-  const {eventsIds, uid} = route.params;
+  const {eventData} = route.params;
   const [loadingScreen, setLoadingScreen] = useState(true);
-  const [events, setEvents] = useState([]);
-  const [loadEvents, {data, refetch }] = useLazyQuery(GET_ALL_EVENTS);
-  const [removeEvent] = useMutation(REMOVE_EVENT);
-  const [userLeft] = useMutation(USER_LEFT_EVENT);
-  const [userJoined] = useMutation(USER_JOINED_EVENT);
-
-  const iconMap = {
-    Badminton: require('../../assets/SportsIcons/Badminton.png'),
-    Baseball: require('../../assets/SportsIcons/Baseball.png'),
-    Basketball: require('../../assets/SportsIcons/Basketball.png'),
-    Billiard: require('../../assets/SportsIcons/Billiard.png'),
-    Bowling: require('../../assets/SportsIcons/Bowling.png'),
-    Football: require('../../assets/SportsIcons/Football.png'),
-    Golf: require('../../assets/SportsIcons/Golf.png'),
-    PingPong: require('../../assets/SportsIcons/PingPong.png'),
-    Rugby: require('../../assets/SportsIcons/Rugby.png'),
-    Tennis: require('../../assets/SportsIcons/Tennis.png'),
-    Volleyball: require('../../assets/SportsIcons/Volleyball.png'),
-    Weightlifting: require('../../assets/SportsIcons/Weightlifting.png'),
-  };
+  const [users, setUsers] = useState([]);
+  const [getUserList, {called, data}] = useLazyQuery(GET_USER_LIST, {
+    variables: { getUserListIds: eventData.attendance },
+  });
 
   useEffect(() => {
     async function initScreen() {
+      console.log(eventData.attendance);
       try {
-        await loadEvents();
-        console.log(data);
+        if (data === undefined) {
+          console.log('fetching data');
+          await getUserList();
+          console.log(called);
+        }
+        console.log('data:');
+        console.log(data.getUserList);
         if (data !== undefined) {
-          let filteredData = data.getAllEvents.filter(event => eventsIds.includes(event._id));
-          filteredData.sort(function (a,b) {
-            return (a.sport < b.sport) ? -1 : (a.sport > b.sport) ? 1 : 0;
-          });
-          setEvents(filteredData);
+          console.log('setting data');
+          setUsers(data.getUserList);
           setLoadingScreen(false);
         }
       } catch (e) {
+        console.log('error');
         console.log(e);
       }
     }
     initScreen();
   }, [data]);
 
-  async function deleteHandler(eventData) {
-    console.log('delete');
-    try {
-      await removeEvent({
-        variables: {
-          userId: uid,
-          eventId: eventData._id,
-        },
-      });
-      await refetch();
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
-  async function cancelHandler(eventData) {
-    try {
-      await userLeft({
-        variables: {
-          userId: uid,
-          eventId: eventData._id,
-        },
-      });
-      await refetch();
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
-  async function joinHandler(eventData) {
-    try {
-      await userJoined({
-        variables: {
-          userId: uid,
-          eventId: eventData._id,
-        },
-      });
-      await refetch();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function renderButton(eventData) {
-    if (uid === eventData.creator_id){
-      return <ButtonGold text="Delete" color="#990000" onClick={() => deleteHandler(eventData)} />;
-    } else {
-      if (eventData.attendance !== undefined) return isAttending(eventData);
-    }
-  }
-
-  function isAttending(eventData) {
-    return eventData.attendance.includes(uid) ? (
-      <ButtonGold text="Cancel" onClick={() => cancelHandler(eventData)} />
-    ) : (
-      <ButtonGold text="Join" onClick={() => joinHandler(eventData)} />
-    );
-  }
-
-  function renderEvents() {
-    if (!loadingScreen && events !== undefined) {
-      const eventsList = events.map((event, idx) => {
-        const sport = event.sport;
+  function renderUsers() {
+    if (!loadingScreen && users !== undefined) {
+      const eventsList = users.map((user, idx) => {
         return (
           <View key ={idx} style={styles.event_container}>
             <View style={styles.left}>
               <View style={styles.img_container}>
-                <Image
-                  source={iconMap[sport]}
+                <ImageBackground 
+                  source={{
+                    uri: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
+                  }}
                   style={styles.img}
                 />
+                {/* <Image
+                  // source={user.img_url}
+                  source={{
+                    uri: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
+                  }}
+                  style={styles.img}
+                /> */}
               </View>
             </View>
             <View style={styles.right}>
-              <Text style={styles.title}>{event.sport}</Text>
-              {event.free ? (
-                <Text style={styles.text}>Free to join!</Text>
-                ) : (
-                  <Text style={styles.text}>{event.price}€</Text>
-                  )}
-              <Text style={styles.text}>{event.date}</Text>
-              <Text style={styles.text}>{event.time}</Text>
-              <Text style={styles.text}>{event.description}</Text>
-              <View style={styles.buttonWrapper}>
-                  {renderButton(event)}
+              <View style={styles.top}>
+                <Text style={styles.topTitle}>{user.nickname}</Text>
+              </View>
+              <View style={styles.center}/>
+              <View style={styles.bottom}>
+              <AirbnbRating
+                defaultRating={user.rating}
+                showRating={false}
+              />
               </View>
             </View>
 
@@ -155,7 +92,7 @@ function EventsList({ route, navigation }) {
       :
       <View style={styles.wrapper}>
         <ScrollView contentContainerStyle={styles.scroll}>
-          {renderEvents()}
+          {renderUsers()}
         </ScrollView>
       </View>
     }
@@ -173,7 +110,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     flexDirection: 'column',
-    justifyContent: 'center',
+  justifyContent: 'center',
   },
   wrapper: {
     flex: 1,
@@ -195,13 +132,15 @@ const styles = StyleSheet.create({
   left: {
     width: '40%',
     justifyContent: 'center',
+    borderRightWidth: 1,
+    borderRightColor: 'silver',
   },
   right: {
     width: '60%',
     padding: 5,
+    justifyContent: 'space-around',
   },
   img_container: {
-    backgroundColor: 'whitesmoke',
     width: 150,
     height: 150,
     borderRadius: 75,
@@ -210,8 +149,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    height: 90,
-    width: 90,
+    height: 150,
+    width: 150,
+    resizeMode: 'cover',
   },
   title: {
     fontWeight: 'bold',
@@ -231,6 +171,24 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 15,
   },
+  center: {
+    height: '1%',
+    borderBottomWidth: 1,
+    borderBottomColor: 'silver',
+  },
+  top: {
+    height: '50%',
+    justifyContent: 'center',
+  },
+  bottom: {
+    height: '50%',
+    justifyContent: 'center',
+  },
+  topTitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    marginLeft: 20,
+  },
 });
 
-export default EventsList;
+export default UsersList;

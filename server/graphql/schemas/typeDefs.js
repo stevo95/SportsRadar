@@ -72,7 +72,7 @@ const typeDefs = gql`
 
   type Query {
     getUser(_id: ID!): User
-    getUserList(_id: [ID!]): [User]
+    getUserList(_ids: [ID]!): [User]
     getEvent(_id: ID!): Event
     logIn(email: String!, password: String!): AuthResponse
     users: [User]!

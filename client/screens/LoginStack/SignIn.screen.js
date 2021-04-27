@@ -12,7 +12,7 @@ function SignInScreen({navigation}) {
   const [userData, setUserData] = useState({email: '', password: ''});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [querySignIn, {loading, error , data}] = useLazyQuery(USER_SIGN_IN);
+  const [querySignIn, {data}] = useLazyQuery(USER_SIGN_IN);
 
   useEffect(() => {
     async function authorize() {
@@ -90,8 +90,9 @@ function SignInScreen({navigation}) {
           iconName="user"
           onTextInput = {emailInput}
           inputValue = {email}
-          featherIconName="check-circle"
+          // featherIconName="check-circle"
           // x-circle
+          // check-circle
           featherColor="green"
         />
         <InputFieldLarge
@@ -100,8 +101,8 @@ function SignInScreen({navigation}) {
           iconName="lock"
           onTextInput = {passwordInput}
           inputValue = {password}
-          featherIconName="eye-off"
-          // "eye"
+          // featherIconName="eye"
+          // "eye-off"
           featherColor="grey"
         />
         <View style={styles.button}>
