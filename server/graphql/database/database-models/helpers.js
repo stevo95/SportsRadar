@@ -11,7 +11,6 @@ async function updateSingleHosting(userId, eventId, action) {
       const idx = hostingArray.indexOf(eventId);
       if (idx !== -1) {
         hostingArray.splice(idx, 1);
-        console.log(hostingArray);
         await db.users.update({events_hosting: hostingArray}, {
           where: {
             _id: userId

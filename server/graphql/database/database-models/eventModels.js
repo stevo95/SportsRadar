@@ -4,7 +4,6 @@ const db = require('../db');
 
 async function addEvent (eventData) {
   try {
-    console.log('adding event');
     await db.events.sync();
     const newEvent = await db.events.create({
       description: eventData.description,

@@ -16,7 +16,6 @@ function ProfileScreen({ route, navigation }) {
   const [userInfo, setUserInfo] = useState({nickname: 'Username', events_attending: [], events_hosting: [], bio: '', rating: 0.5, posts: []});
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [userId, setUserId] = useState();
-  console.log(userId);
 
 
   useEffect(() => {
@@ -72,11 +71,11 @@ function ProfileScreen({ route, navigation }) {
           <View style={styles.card}>
             <TouchableOpacity style={styles.profilePictureContainer}>
               <Image
-                style={styles.img}
-                source={{
-                  uri: 'https://i.pinimg.com/originals/ee/85/64/ee8564ee5234e650aadf4c19b6d7c753.jpg',
-                }}
-              />
+                  style={styles.img}
+                  source={{
+                    uri: userInfo.img_url,
+                  }}
+                />
             </TouchableOpacity>
             <Text style={styles.username}>{userInfo.nickname}</Text>
           </View>
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
     height: 250,
     width: 250,
     resizeMode: 'cover',
-    backgroundColor: 'gold',
+    backgroundColor: 'whitesmoke',
     borderRadius: 125,
   },
   username: {

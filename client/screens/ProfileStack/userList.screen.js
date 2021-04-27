@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, ScrollView, Dimensions, ImageBackground} from 'react-native';
+import {View, Text, StyleSheet, Image, ScrollView, Dimensions, ImageBackground, TouchableOpacity} from 'react-native';
 import { useLazyQuery  } from '@apollo/client';
 import {  GET_USER_LIST } from '../../GraphQL/queriesDeclarations';
 import Spinner from 'react-native-spinkit';
@@ -18,29 +18,29 @@ function UsersList({ route, navigation }) {
 
   useEffect(() => {
     async function initScreen() {
-      console.log(eventData.attendance);
       try {
         if (data === undefined) {
-          console.log('fetching data');
           await getUserList();
-          console.log(called);
         }
-        console.log('data:');
-        console.log(data.getUserList);
         if (data !== undefined) {
-          console.log('setting data');
           setUsers(data.getUserList);
           setLoadingScreen(false);
         }
-      } catch (e) {
-        console.log('error');
-        console.log(e);
+      } catch (err) {
+        console.log(err);
       }
     }
     initScreen();
   }, [data]);
 
-
+  function openProfile(userId) {
+    navigation.navigate('ProfileStack', {
+      screen: 'UserProfile',
+      params: {
+        userId: userId,
+      },
+    });
+  }
 
   function renderUsers() {
     if (!loadingScreen && users !== undefined) {
@@ -48,21 +48,14 @@ function UsersList({ route, navigation }) {
         return (
           <View key ={idx} style={styles.event_container}>
             <View style={styles.left}>
-              <View style={styles.img_container}>
-                <ImageBackground 
+              <TouchableOpacity style={styles.img_container} onPress={() => openProfile(user._id)}>
+                <ImageBackground
                   source={{
                     uri: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
                   }}
                   style={styles.img}
                 />
-                {/* <Image
-                  // source={user.img_url}
-                  source={{
-                    uri: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
-                  }}
-                  style={styles.img}
-                /> */}
-              </View>
+              </TouchableOpacity>
             </View>
             <View style={styles.right}>
               <View style={styles.top}>

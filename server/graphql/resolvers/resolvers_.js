@@ -17,7 +17,6 @@ module.exports = {
     getUserList: async(_, idsArray) => {
       try {
         const users = await models.userModels.getUserList(idsArray._ids);
-        console.log(users);
         return users;
       } catch (error) {
         console.log(error);
@@ -121,7 +120,6 @@ module.exports = {
         message: 'Successfully updated',
         updatedList: events,
       }
-      console.log('finished');
       return responseMessage;
     } catch (error) {
       console.log(error);

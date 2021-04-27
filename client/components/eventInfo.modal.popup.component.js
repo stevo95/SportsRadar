@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
 import {Text, StyleSheet, View, TouchableOpacity, Image} from 'react-native';
+import {useQuery} from '@apollo/client';
 import {useMutation} from '@apollo/client';
 import Modal from 'react-native-modal';
+import {GET_USER} from '../GraphQL/queriesDeclarations';
 
 import ButtonGold from './button.gold.component ';
 import {
@@ -24,17 +26,22 @@ function EventInfoModalPopup({
   const [userLeft] = useMutation(USER_LEFT_EVENT);
   const [removeEvent] = useMutation(REMOVE_EVENT);
   const [joined, setJoined] = useState(false);
+  const [imgUrl, setImgUrl] = useState('http');
   const [attending, setAttending] = useState(eventData.attendance.length);
   const [attendance, setAttendance] = useState(eventData.attendance);
+  const {data} = useQuery(GET_USER, {
+    variables: {getUserId: eventData.creator_id},
+  });
 
   useEffect(() => {
+    if (data !== undefined) setImgUrl(data.getUser.img_url);
     if (attendance !== undefined) {
       if (attendance.includes(uid)) {
         console.log(joined);
         setJoined(true);
       }
     }
-  }, [joined]);
+  }, [joined, data]);
 
   function hideModal() {
     visibleSetter(false);
@@ -140,7 +147,7 @@ function EventInfoModalPopup({
       backdropOpacity={0.3}>
       <View style={styles.left}>
         <TouchableOpacity style={styles.profileContainer} onPress={openProfile}>
-          <Image source={require('../assets/user.png')} style={styles.image} />
+          <Image source={{uri: imgUrl}} style={styles.image} />
         </TouchableOpacity>
       </View>
 
@@ -219,13 +226,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   image: {
-    height: 80,
-    width: 100,
+    height: 120,
+    width: 140,
     alignSelf: 'center',
     resizeMode: 'cover',
   },
   imgContainer: {
     flex: 1,
+    backgroundColor: 'whitesmoke',
   },
   attendance: {
     flexDirection: 'row',
