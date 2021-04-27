@@ -2,9 +2,9 @@
 // require('dotenv').config();
 
 import React from 'react';
+import {StyleSheet, Dimensions} from 'react-native';
 import { Root } from 'native-base';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import { onError } from 'apollo-link-error';
 
 import {NavigationContainer} from '@react-navigation/native';
 import RootStackScreen from './Navigators/RootStack.Navigator';
@@ -30,14 +30,14 @@ const client = new ApolloClient({
 
 function App() {
   return (
-    <ApolloProvider client={client}>
-      <Root>
-        <NavigationContainer>
-          <RootStackScreen/>
-        </NavigationContainer>
-      </Root>
-    </ApolloProvider>
-  );
+      <ApolloProvider client={client}>
+        <Root>
+          <NavigationContainer>
+            <RootStackScreen/>
+          </NavigationContainer>
+        </Root>
+      </ApolloProvider>
+    );
 }
 
 export default App;

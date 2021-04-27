@@ -61,7 +61,7 @@ function SignUpScreen({navigation}) {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
-          source={require('../../assets/logo.png')}
+          source={require('../../assets/logo-no-bg.png')}
           style={styles.logo}
           resizeMode="stretch"
         />
@@ -108,7 +108,7 @@ function SignUpScreen({navigation}) {
 }
 
 const {height} = Dimensions.get('screen');
-const height_logo = height * 0.4;
+const height_logo = height * 0.2;
 
 const styles = StyleSheet.create({
   container: {
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingVertical: 50,
     paddingHorizontal: 30,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   footer: {
     flex: 0.5,

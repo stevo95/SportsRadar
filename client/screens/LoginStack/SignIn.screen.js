@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions, PermissionsAndroid} from 'react-native';
+import {View, Text, StyleSheet, Image, Dimensions, ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLazyQuery } from '@apollo/client';
 import InputFieldLarge from '../../components/inputField.large.component';
@@ -74,13 +74,15 @@ function SignInScreen({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/logo.png')}
+        <ImageBackground
+          source={require('../../assets/logo-no-bg.png')}
           style={styles.logo}
           resizeMode="stretch"
         />
-        <Text style={styles.title}>Welcome back!</Text>
-        <Text style={styles.title}>Enter your login details</Text>
+        <View>
+          <Text style={styles.title}>Welcome back!</Text>
+          <Text style={styles.title}>Enter your login details</Text>
+        </View>
       </View>
 
       <View style={styles.footer}>
@@ -113,7 +115,7 @@ function SignInScreen({navigation}) {
   );
 }
 const {height} = Dimensions.get('screen');
-const height_logo = height * 0.3;
+const height_logo = height * 0.20;
 
 const styles = StyleSheet.create({
   container: {
@@ -127,7 +129,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     paddingVertical: 50,
     paddingHorizontal: 30,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   footer: {
     flex: 0.5,
