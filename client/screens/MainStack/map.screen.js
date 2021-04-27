@@ -17,8 +17,25 @@ import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
 const mapStyle = require('../../assets/mapStyle.json');
 
 function MapScreen({navigation}) {
+
+  const markerMap = {
+    Badminton: require('../../assets/Markers/Badminton.png'),
+    Baseball: require('../../assets/Markers/Baseball.png'),
+    Basketball: require('../../assets/Markers/Basketball.png'),
+    Billiard: require('../../assets/Markers/Billiard.png'),
+    Bowling: require('../../assets/Markers/Bowling.png'),
+    Football: require('../../assets/Markers/Football.png'),
+    Golf: require('../../assets/Markers/Golf.png'),
+    PingPong: require('../../assets/Markers/PingPong.png'),
+    Rugby: require('../../assets/Markers/Rugby.png'),
+    Tennis: require('../../assets/Markers/Tennis.png'),
+    Volleyball: require('../../assets/Markers/Volleyball.png'),
+    Weightlifting: require('../../assets/Markers/Weightlifting.png'),
+  };
+
   const [loading, setLoading] = useState(true);
   const [authData, setAuthData] = useState({uid: '0', username: 'default'});
+  const [refetchCalled, setRefetchCalled] = useState(false);
   const [newMarkerCoordinates , setNewMarkerCoordinates ] = useState();
   const [createEventModalVisible, setCreateEventModalVisible] = useState(false);
   const [eventModalVisible, setEventModalVisible] = useState(false);
@@ -82,7 +99,7 @@ function MapScreen({navigation}) {
     };
     async function initializeData() {
       try {
-        if (data === undefined) await loadEvents();
+        if (data === undefined || setRefetchCalled) await loadEvents();
         if (data !== undefined ) {
           setEvents(data.getAllEvents);
         }
@@ -139,6 +156,7 @@ function MapScreen({navigation}) {
         addEventPrice: markerData.price,
       }});
       await refetch();
+      setRefetchCalled(true);
       const newEventId = addEventResult.data.addEvent.event._id;
       await updateHosting({variables: {
         updateUserHostingId: authData.uid,
@@ -167,11 +185,12 @@ function MapScreen({navigation}) {
   function renderEvents() {
     if (!loading && events !== undefined) {
       const eventsList = events.map((marker, idx) => {
+        const sport = marker.sport;
         return (
           <MapView.Marker
             key = {idx}
             onPress = {() => eventOnPress(idx)}
-            image={require('../../assets/event-locator.png')}
+            image={markerMap[sport]}
             coordinate= {{
               latitude: marker.latitude,
               longitude: marker.longitude,

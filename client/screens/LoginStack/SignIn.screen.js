@@ -26,7 +26,9 @@ function SignInScreen({navigation}) {
           setEmail('');
           setPassword('');
           setUserData({email: '', password: ''});
-          navigation.navigate('MainTabScreen');
+          navigation.navigate('MainTabScreen', {
+            screen: 'Map',
+          });
         }
       } catch (err) {
         console.log(err);

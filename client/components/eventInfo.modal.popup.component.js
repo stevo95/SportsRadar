@@ -17,17 +17,19 @@ function EventInfoModalPopup({
   eventData,
   navHandler,
   uid,
-  setEvents,
   refetchEvents,
 }) {
   const [userJoined] = useMutation(USER_JOINED_EVENT);
   const [userLeft] = useMutation(USER_LEFT_EVENT);
   const [removeEvent] = useMutation(REMOVE_EVENT);
   const [joined, setJoined] = useState(false);
+  const [attending, setAttending] = useState(eventData.attendance.length);
+  const [attendance, setAttendance] = useState(eventData.attendance);
 
   useEffect(() => {
-    if (eventData.attendance !== undefined) {
-      if (eventData.attendance.includes(uid)) {
+    if (attendance !== undefined) {
+      if (attendance.includes(uid)) {
+        console.log(joined);
         setJoined(true);
       }
     }
@@ -69,6 +71,9 @@ function EventInfoModalPopup({
           eventId: eventData._id,
         },
       });
+      setAttending(prevState => {
+        return prevState + 1;
+      });
       await updateEvents(updatedEvents.data.userJoinedEvent.updatedList);
       setJoined(true);
     } catch (error) {
@@ -83,6 +88,15 @@ function EventInfoModalPopup({
           userId: uid,
           eventId: eventData._id,
         },
+      });
+      setAttending(prevState => {
+        return prevState - 1;
+      });
+      setAttendance(prevState => {
+        const copy = [...prevState];
+        const idx = copy.indexOf(uid);
+        copy.splice(idx,1);
+        return copy;
       });
       setJoined(false);
       await updateEvents();
@@ -137,6 +151,10 @@ function EventInfoModalPopup({
         <Text style={styles.text}>{eventData.date}</Text>
         <Text style={styles.text}>{eventData.time}</Text>
         <Text style={styles.text}>{eventData.description}</Text>
+        <TouchableOpacity style={styles.attendance}>
+          <Text style={styles.textAttending}>Attending: </Text>
+          <Text style={styles.textAttending}>{attending}</Text>
+        </TouchableOpacity>
         <View style={styles.buttonWrapper}>{renderButton()}</View>
       </View>
     </Modal>
@@ -202,6 +220,16 @@ const styles = StyleSheet.create({
   },
   imgContainer: {
     flex: 1,
+  },
+  attendance: {
+    flexDirection: 'row',
+  },
+  textAttending: {
+    color: 'black',
+    fontSize: 20,
+    fontFamily: 'sans-serif-medium',
+    textAlign: 'left',
+    marginLeft: '2%',
   },
 });
 

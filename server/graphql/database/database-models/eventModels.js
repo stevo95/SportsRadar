@@ -27,6 +27,7 @@ async function addEvent (eventData) {
 
 async function getAllEvents() {
   try {
+    await db.events.sync();
     const events = await db.events.findAll();
     return events;
   } catch (error) {
