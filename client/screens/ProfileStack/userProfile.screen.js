@@ -74,6 +74,7 @@ function ProfileScreen({ route, navigation }) {
                   style={styles.img}
                   source={{
                     uri: userInfo.img_url,
+                    // uri: 'https://phantom-marca.unidadeditorial.es/b3709fa61a7633b85c74812ac35f35fc/resize/1320/f/jpg/assets/multimedia/imagenes/2021/04/15/16184985433307.jpg',
                   }}
                 />
             </TouchableOpacity>
@@ -81,7 +82,7 @@ function ProfileScreen({ route, navigation }) {
           </View>
           <View style={styles.card}>
             <View style={styles.bio}>
-              <Text>{userInfo.bio}</Text>
+              <Text style={styles.bioText}>{userInfo.bio}</Text>
             </View>
           </View>
           <View style={styles.card}>
@@ -227,6 +228,9 @@ const styles = StyleSheet.create({
     width: '8%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bioText: {
+    fontSize: 20,
   },
 });
 

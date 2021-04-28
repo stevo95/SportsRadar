@@ -51,7 +51,7 @@ function UsersList({ route, navigation }) {
               <TouchableOpacity style={styles.img_container} onPress={() => openProfile(user._id)}>
                 <ImageBackground
                   source={{
-                    uri: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
+                    uri: user.img_url,
                   }}
                   style={styles.img}
                 />

@@ -7,7 +7,7 @@ import {Icon} from 'native-base';
 
 function EditBioModal({visible, visibleSetter, value, uid, refetchUser}) {
 
-  const [bio, setBio] = useState(value);
+  const [bio, setBio] = useState('');
   const [changeBio] = useMutation(CHANGE_BIO);
 
   function hideModal() {
@@ -31,7 +31,6 @@ function EditBioModal({visible, visibleSetter, value, uid, refetchUser}) {
     } catch (err) {
       console.log(err);
     }
-    console.log('hey');
   }
 
   return (

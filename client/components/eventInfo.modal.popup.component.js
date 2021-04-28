@@ -37,7 +37,6 @@ function EventInfoModalPopup({
     if (data !== undefined) setImgUrl(data.getUser.img_url);
     if (attendance !== undefined) {
       if (attendance.includes(uid)) {
-        console.log(joined);
         setJoined(true);
       }
     }
@@ -226,10 +225,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   image: {
-    height: 120,
-    width: 140,
+    height: 150,
+    width: 150,
     alignSelf: 'center',
     resizeMode: 'cover',
+    borderRadius: 75,
   },
   imgContainer: {
     flex: 1,

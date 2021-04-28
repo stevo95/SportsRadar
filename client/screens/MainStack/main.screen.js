@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, ScrollView, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import { useMutation, useLazyQuery  } from '@apollo/client';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
 import {  REMOVE_EVENT, USER_LEFT_EVENT, USER_JOINED_EVENT } from '../../GraphQL/mutationDeclarations';
@@ -8,7 +8,7 @@ import Spinner from 'react-native-spinkit';
 import ButtonGold from '../../components/button.gold.component ';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-function EventsList() {
+function EventsList({navigation}) {
   const [uid, setUid] = useState(0);
   const [loadingScreen, setLoadingScreen] = useState(true);
   const [events, setEvents] = useState([]);
@@ -16,6 +16,7 @@ function EventsList() {
   const [removeEvent] = useMutation(REMOVE_EVENT);
   const [userLeft] = useMutation(USER_LEFT_EVENT);
   const [userJoined] = useMutation(USER_JOINED_EVENT);
+  
 
   const uriMap = {
     Badminton: require('../../assets/SportsIcons/Badminton.png'),
@@ -39,7 +40,6 @@ function EventsList() {
         const parsedData = authData !== null ? JSON.parse(authData) : null;
         await setUid(parsedData.uid);
         await loadEvents();
-        console.log(data);
         if (data !== undefined) {
           let filteredData = data.getAllEvents.filter(event => event.creator_id !== uid);
           filteredData.sort(function (a,b) {
@@ -48,8 +48,8 @@ function EventsList() {
           setEvents(filteredData);
           setLoadingScreen(false);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (error) {
+        console.log(error);
       }
     }
     initScreen();
@@ -95,6 +95,15 @@ function EventsList() {
     );
   }
 
+  function attendingPress(eventData) {
+    navigation.navigate('ProfileStack', {
+      screen: 'UsersList',
+      params: {
+        eventData: eventData,
+      },
+    });
+  }
+
   function renderEvents() {
     if (!loadingScreen && events !== undefined) {
       const eventsList = events.map((event, idx) => {
@@ -120,6 +129,10 @@ function EventsList() {
               <Text style={styles.text}>{event.date}</Text>
               <Text style={styles.text}>{event.time}</Text>
               <Text style={styles.text}>{event.description}</Text>
+              <TouchableOpacity style={styles.attendance} onPress={() => attendingPress(event)}>
+                <Text style={styles.textAttending}>Attending: </Text>
+                <Text style={styles.textAttending}>{event.attendance.length}</Text>
+              </TouchableOpacity>
               <View style={styles.buttonWrapper}>
                   {renderButton(event)}
               </View>
@@ -203,10 +216,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   buttonWrapper: {
-    height: 40,
-    marginBottom: '10%',
+    height: 20,
+    position: 'absolute',
+    marginTop: '44%',
+    marginLeft: 50,
     width: '60%',
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
   },
   spinStyle: {
     width: height_loader,
@@ -215,6 +230,15 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
+  },
+  attendance: {
+    flexDirection: 'row',
+  },
+  textAttending: {
+    color: 'black',
+    fontSize: 15,
+    fontFamily: 'sans-serif-medium',
+    textAlign: 'left',
   },
 });
 

@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, ScrollView, Dimensions} from 'react-native';
+import {View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import { useMutation, useLazyQuery  } from '@apollo/client';
 import {  GET_ALL_EVENTS } from '../../GraphQL/queriesDeclarations';
 import {  REMOVE_EVENT, USER_LEFT_EVENT, USER_JOINED_EVENT } from '../../GraphQL/mutationDeclarations';
@@ -36,7 +36,6 @@ function EventsList({ route, navigation }) {
     async function initScreen() {
       try {
         await loadEvents();
-        console.log(data);
         if (data !== undefined) {
           let filteredData = data.getAllEvents.filter(event => eventsIds.includes(event._id));
           filteredData.sort(function (a,b) {
@@ -53,7 +52,6 @@ function EventsList({ route, navigation }) {
   }, [data]);
 
   async function deleteHandler(eventData) {
-    console.log('delete');
     try {
       await removeEvent({
         variables: {
@@ -111,6 +109,15 @@ function EventsList({ route, navigation }) {
     );
   }
 
+  function attendingPress(eventData) {
+    navigation.navigate('ProfileStack', {
+      screen: 'UsersList',
+      params: {
+        eventData: eventData,
+      },
+    });
+  }
+
   function renderEvents() {
     if (!loadingScreen && events !== undefined) {
       const eventsList = events.map((event, idx) => {
@@ -135,6 +142,10 @@ function EventsList({ route, navigation }) {
               <Text style={styles.text}>{event.date}</Text>
               <Text style={styles.text}>{event.time}</Text>
               <Text style={styles.text}>{event.description}</Text>
+              <TouchableOpacity style={styles.attendance} onPress={() => {attendingPress(event)}}>
+                <Text style={styles.textAttending}>Attending: </Text>
+                <Text style={styles.textAttending}>{event.attendance.length}</Text>
+              </TouchableOpacity>
               <View style={styles.buttonWrapper}>
                   {renderButton(event)}
               </View>
@@ -218,8 +229,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   buttonWrapper: {
-    height: 40,
-    marginBottom: '10%',
+    height: 0,
+    position:'absolute',
+    marginTop: '44%',
     width: '60%',
     alignSelf: 'center',
   },
@@ -230,7 +242,17 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
-  }
+  },
+  attendance: {
+    flexDirection: 'row',
+  },
+  textAttending: {
+    color: 'black',
+    fontSize: 20,
+    fontFamily: 'sans-serif-medium',
+    textAlign: 'left',
+    marginLeft: '2%',
+  },
 });
 
 export default EventsList;

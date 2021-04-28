@@ -57,6 +57,9 @@ function SignInScreen({navigation}) {
         logInEmail: userData.email,
         logInPassword: userData.password,
       }});
+      navigation.navigate('MainTabScreen', {
+        screen: 'Map',
+      });
     } catch (err) {
         console.log(err);
     }
@@ -64,7 +67,8 @@ function SignInScreen({navigation}) {
 
   async function signIn() {
     try {
-      const jsonValue = await JSON.stringify({uid: data.logIn.user._id, username: data.logIn.user.nickname});
+      // const jsonValue = await JSON.stringify({uid: data.logIn.user._id, username: data.logIn.user.nickname});
+      const jsonValue = await JSON.stringify({uid: '9', username: 'testuser123'});
       await AsyncStorage.setItem('authInfo', jsonValue);
     } catch (err) {
       console.log(err);

@@ -20,6 +20,8 @@ async function addEvent (eventData) {
     });
     return newEvent;
   } catch(error) {
+    console.log('__________________________________________ error _________________________________________');
+    console.log(error);
     return error;
   }
 }

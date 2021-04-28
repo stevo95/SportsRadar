@@ -52,14 +52,14 @@ async function addUser(userData) {
       nickname: userData.nickname,
       email: userData.email,
       password: userData.password,
-      bio: 'GO HARD !!!',
+      bio: 'I enjoy football, basketball and swimming. Looking for somebody to play tennis with on Saturdays',
       friends: [],
       events_attending: [],
       events_hosting: [],
       posts: [],
-      rating: 1,
+      rating: 4,
       num_of_ratings: 0,
-      img_url: 'http://assets.stickpng.com/thumbs/58909b545236a4e0f6e2f975.png',
+      img_url: 'https://www.youngisthan.in/userfiles/funny/funny-sports-10.jpg',
     });
     return {
       success: true,

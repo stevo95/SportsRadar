@@ -153,7 +153,6 @@ function ProfileScreen({navigation}) {
           <ModalPopup
             visible={modalVisible}
             visibleSetter = {setModalVisible}
-            value={userInfo.bio}
             uid={userId}
             refetchUser={refetch}
           />
@@ -170,7 +169,7 @@ function ProfileScreen({navigation}) {
           </View>
           <View style={styles.card}>
             <View style={styles.bio}>
-              <Text>{userInfo.bio}</Text>
+              <Text style={styles.bioText}>{userInfo.bio}</Text>
             </View>
             <TouchableOpacity
               style={styles.editButton}
@@ -340,6 +339,9 @@ const styles = StyleSheet.create({
     width: '8%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bioText: {
+    fontSize: 20,
   },
 });
 
