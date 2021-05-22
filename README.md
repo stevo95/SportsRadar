@@ -44,3 +44,4 @@ browse the map and join any of the public events created by other users.
 
 ## Tech Stack
 ### Frontend
+<img src="./ReadmeLogos/frontEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/google-maps.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/javascript.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/react.svg" height="45px">
