@@ -41,3 +41,6 @@ browse the map and join any of the public events created by other users.
 
 ```
 <br>
+
+## Tech Stack
+### Frontend
