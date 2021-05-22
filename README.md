@@ -44,4 +44,8 @@ browse the map and join any of the public events created by other users.
 
 ## Tech Stack
 ### Frontend
-<img src="./ReadmeLogos/frontEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/google-maps.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/javascript.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/react.svg" height="45px">
+<img src="./ReadmeLogos/frontEnd/react.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/react.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/google-maps.svg" height="45px">
+<br>
+### Backend
+<img src="./ReadmeLogos/backEnd/javascript.svg" height="45px"> <img src="./ReadmeLogos/backEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/backEnd/graphql.svg" height="45px"> <img src="./ReadmeLogos/backEnd/postgresql.svg" height="45px"> <img src="./ReadmeLogos/backEnd/sequelize.svg" height="45px">
+ 
