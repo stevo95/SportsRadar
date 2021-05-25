@@ -24,6 +24,12 @@ Pressing and holding a spot on the map will trigger a create event modal, used t
 Pressing the right button on the bottom tab leads to the user profile page with the user information and dashboard with user posts. Clicking the "Hosting" will lead to a list of the events the user is hosting. There is a possibility to delete the event hosted by the user. Pressing the "Attending" text will lead to the list of events the user is Attending. It is possible to cancel the attendence. 
 <img src="./ReadmeLogos/screens/profile.jpg" height="auto">
 
+## Planned:
+    - OAuth implementation using firebase
+    - Following / followers functionality
+    - Events filtering by distance from user
+    - Post feed
+    - Post likes / comments
 
 
 
