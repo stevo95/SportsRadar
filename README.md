@@ -7,6 +7,12 @@ Simply choose the location of your workout on the map, choose the sport you want
 browse the map and join any of the public events created by other users.
 <br>
 
+## About
+### Splash screen | SignIn Screen | SignUp Screen
+
+
+
+
 ## Folder Structure
 ```
 ── client ** React Native Frontend built using React Native CLI
@@ -44,3 +50,8 @@ browse the map and join any of the public events created by other users.
 
 ## Tech Stack
 ### Frontend
+<img src="./ReadmeLogos/frontEnd/javascript.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/react.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/frontEnd/google-maps.svg" height="45px">
+<br>
+### Backend
+<img src="./ReadmeLogos/backEnd/javascript.svg" height="45px"> <img src="./ReadmeLogos/backEnd/apollo.svg" height="45px"> <img src="./ReadmeLogos/backEnd/graphql.svg" height="45px"> <img src="./ReadmeLogos/backEnd/postgresql.svg" height="45px"> <img src="./ReadmeLogos/backEnd/sequelize.svg" height="45px">
+ 
