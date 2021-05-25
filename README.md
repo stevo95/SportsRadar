@@ -11,10 +11,18 @@ browse the map and join any of the public events created by other users.
 ### Splash screen | SignIn Screen | SignUp Screen
 <img src="./ReadmeLogos/screens/login.jpg" height="auto">
 <br>
+
 ### Map screen | About event | Users attending
-<br>
-After logging in, user lands on the map page where
+After logging in, user lands on the map page where all the availible events are visible. By clicking an event pin a modal with event info appears. The user can either join the event, or cancel the attandance if already joined. Clicking the "Attending" text will show a list with all users attending the event.
 <img src="./ReadmeLogos/screens/map.jpg" height="auto">
+<br>
+### Create event modal
+Pressing and holding a spot on the map will trigger a create event modal, used to create new events.
+<img src="./ReadmeLogos/screens/create.jpg" height="auto">
+<br>
+### User profile | Hosting | Attending
+Pressing the right button on the bottom tab leads to the user profile page with the user information and dashboard with user posts. Clicking the "Hosting" will lead to a list of the events the user is hosting. There is a possibility to delete the event hosted by the user. Pressing the "Attending" text will lead to the list of events the user is Attending. It is possible to cancel the attendence. 
+<img src="./ReadmeLogos/screens/profile.jpg" height="auto">
 
 
 
