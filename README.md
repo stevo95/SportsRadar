@@ -9,6 +9,13 @@ browse the map and join any of the public events created by other users.
 
 ## About
 ### Splash screen | SignIn Screen | SignUp Screen
+<img src="./ReadmeLogos/screens/login.jpg" height="auto">
+<br>
+### Map screen | About event | Users attending
+<br>
+After logging in, user lands on the map page where
+<img src="./ReadmeLogos/screens/map.jpg" height="auto">
+
 
 
 
