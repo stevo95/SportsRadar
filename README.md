@@ -7,6 +7,12 @@ Simply choose the location of your workout on the map, choose the sport you want
 browse the map and join any of the public events created by other users.
 <br>
 
+## About
+### Splash screen | SignIn Screen | SignUp Screen
+
+
+
+
 ## Folder Structure
 ```
 ── client ** React Native Frontend built using React Native CLI
