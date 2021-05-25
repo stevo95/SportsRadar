@@ -30,6 +30,7 @@ Pressing the right button on the bottom tab leads to the user profile page with 
     - Events filtering by distance from user
     - Post feed
     - Post likes / comments
+    - 
 
 
 
