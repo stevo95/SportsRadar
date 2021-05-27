@@ -13,7 +13,7 @@ browse the map and join any of the public events created by other users.
 <br>
 
 ### Map screen | About event | Users attending
-After logging in, user lands on the map page where all the availible events are visible. By clicking an event pin a modal with event info appears. The user can either join the event, or cancel the attandance if already joined. Clicking the "Attending" text will show a list with all users attending the event.
+After logging in, user lands on the map page where all the availible events are visible. Application gets the users geolocation to locate him on the map. By clicking an event pin a modal with event info appears. The user can either join the event, or cancel the attandance if already joined. Clicking the "Attending" text will show a list with all users attending the event.
 <img src="./ReadmeLogos/screens/map.jpg" height="auto">
 <br>
 ### Create event modal
